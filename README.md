@@ -1,3 +1,25 @@
 <img src=https://source.unsplash.com/800x500/?moon>
 
-<img src="https://latex.codecogs.com/svg.latex?\dpi{150}&space;\LARGE&space;\underset{N_{i&plus;1}&space;\times&space;1}{\pmb{y}_{i&plus;1}}&space;=&space;\underset{N_{i&plus;1}&space;\times&space;N_i}{\pmb{W}_{i}}&space;\cdot&space;\underset{N_{i}&space;\times&space;1}{\pmb{y}_{i}}&space;&plus;&space;\underset{N_{i&plus;1}&space;\times&space;1}{\pmb{b}_{i}}&space;\\&space;\pmb{W}_i&space;=&space;\begin{bmatrix}&space;w_{i,0,0}&space;&&space;\hdots&space;&&space;w_{i,0,N_{i}}&space;\\&space;\vdots&space;&&space;\ddots&space;&&space;\vdots&space;\\&space;w_{i,N_{i&plus;1},0}&space;&&space;\hdots&space;&&space;w_{i,N_{i&plus;1},N_{i}}&space;\end{bmatrix}&space;\\&space;\pmb{B}_i&space;=&space;\begin{bmatrix}&space;b_{i,0}&space;&&space;\hdots&space;&&space;b_{i,N_{i&plus;1}}&space;\end{bmatrix}^\intercal&space;\\&space;\pmb{Z}&space;=&space;\begin{bmatrix}&space;\text{vec}\left(\pmb{W}_i&space;\right&space;)&space;\Vert&space;\text{vec}\left(\pmb{B}_i&space;\right)&space;\forall&space;i&space;\in&space;\left\{0&space;\hdots&space;L-1\right\}&space;\end{bmatrix}^\intercal" title="\LARGE \underset{N_{i+1} \times 1}{\pmb{y}_{i+1}} = \underset{N_{i+1} \times N_i}{\pmb{W}_{i}} \cdot \underset{N_{i} \times 1}{\pmb{y}_{i}} + \underset{N_{i+1} \times 1}{\pmb{b}_{i}} \\ \pmb{W}_i = \begin{bmatrix} w_{i,0,0} & \hdots & w_{i,0,N_{i}} \\ \vdots & \ddots & \vdots \\ w_{i,N_{i+1},0} & \hdots & w_{i,N_{i+1},N_{i}} \end{bmatrix} \\ \pmb{B}_i = \begin{bmatrix} b_{i,0} & \hdots & b_{i,N_{i+1}} \end{bmatrix}^\intercal \\ \pmb{Z} = \begin{bmatrix} \text{vec}\left(\pmb{W}_i \right ) \Vert \text{vec}\left(\pmb{B}_i \right) \forall i \in \left\{0 \hdots L-1\right\} \end{bmatrix}^\intercal" />
+# Evolutionary Neurocontrol
+
+1. Transcribe the trajectory optimisation problem and neural network parametres into a nonlinear programme (NLP):
+ - initial time
+ - ending time
+ - ending orbital parametres
+ - neural network weights and biases
+2. Use a meta-heuristic algorithm to manipulate the NLP parametres.
+ - e.g. self-adaptive differential evolution
+3. For each optimiser iteration, propogate the system with the neural network as a reactive controller.
+ - using and adaptive numerical integrator, e.g. Runge-Kutta-Fehlberg 78
+ - propogate until termination condition, e.g. max duration and/or optimality.
+ 
+ #  Supervised learning
+ 
+ 1. Generate database of optimal lunar trajectories to halo orbit from various different initial conditions
+  - low thrust
+  - impulsive
+  - using direct transcription method, e.g. Sim-Flanagan leg from initial position to periapsis/apoapsis.
+  
+ # Meta
+ 
+ 1. Develop low-energy lunar trajectory optimisation tools with C++ backend and Python frontend.

@@ -9,78 +9,58 @@
 #include <vector>
 #include <iostream>
 #include <eigen3/Eigen/Dense>
-#include <vector>
+#include "utl.hpp"
 
 using namespace std;
 using namespace Eigen;
 
-// planets obviously
-namespace plnt {
+// planet obviously
+class plnt {
 
-  // base
-  class base {
+  public:
 
-    public:
+    // usefull types
+    typedef Matrix<double, 6, 1> State;
+    typedef vector<State> States;
 
-      // usefull types
-      typedef Matrix<double, 6, 1> State;
-      typedef vector<State> States;
+    // constants
+    string name;      // name obviously                  [text]
+    int id;           // spice ID                        [ID]
+    double radius;    // terrestrial radius              [m]
+    double mu;        // gravitational parametre         [m^3/s^2]
+    State state;      // position and velocity           [m, m/s]
 
-      // constants
-      string name;   // name obviously                  [text]
-      double radius; // terrestrial radius              [m]
-      double soi;    // sphere of influence             [m]
-      double mu;     // gravitational parametre         [m^3/s^2]
-      double mup;    // primary gravitational parametre [m^3/s^2]
-      States state;  // position and velocity           [m, m/s]
+    // constructor
+    plnt(string name_) {
+      name = name_;
+      spc::plnt_info(name, id, radius, mu);
+      // message
+      cout << "Planet " << name << " (" << this << ") ";
+      cout << "constructed." << endl;
+    };
 
+    // destructor
+    ~plnt(void) {
+      cout << "Planet " << name << " (" << this << ") ";
+      cout << "destructed." << endl;
+    };
 
-      // constructor
-      base(string name_, double radius_, double soi_, double mu_, double mup_) {
-        name   = name_;
-        radius = radius_;
-        soi    = soi_;
-        mu     = mu_;
-        mup    = mup_;
-        cout << "Planet " << name << " (" << this << ") ";
-        cout << "initialised with constants:\n";
-        cout << "Radius = " << radius << " [m]\t";
-        cout << "Sphere of influence = " << " [m]\t";
-        cout << "Gravitational parametre = " << " [m^3/s^2]\t";
-        cout << "Primary gravitational parametre = " << " [m^3/m^2]" << endl;
-      };
+    // print details
+    void print(void) {
+      cout << "Planet " << name << " (" << this << ") ";
+      cout << "initialised with constants:\n";
+      cout << "R = " << radius << " [m]\t";
+      cout << "Mu = " << mu << " [m^3/s^2]" << endl;
+    };
 
-      // destructor
-      virtual ~base(void)
+    // compute state
+    void eph(double epoch, string obs) {
+      SpiceDouble lt;
+      SpiceDouble st[6];
+      spkezr_c(name.c_str(), epoch, "J2000", "NONE", obs.c_str(), st, &lt);
+      for (int i=0; i<6; i++) {state(i) = st[i]*1000;};
+    };
 
-  };
-
-  // spicy planet
-  class spc : public base {
-
-    public:
-
-      // constants
-      string ref; // reference frame
-
-      // constructor
-      spc(
-        string name_,
-        double radius_,
-        double soi_,
-        double mu_,
-        double mup_,
-        string ref_
-      ) {
-
-      };
-
-
-
-
-
-
-  };
 
 };
 

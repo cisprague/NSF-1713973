@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o  -o fika /home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/lib/cspice.a 

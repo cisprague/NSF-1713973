@@ -8,7 +8,6 @@
 #include "ml.hpp"   // machine learning
 #include "plnt.hpp" // planets
 #include "sc.hpp"   // spacecraft
-#include "utl.hpp"  // utilities
 
 #endif
 

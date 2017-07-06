@@ -10,8 +10,9 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../cor"
   "/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/include"
+  "/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/matplotlib-cpp"
+  "/usr/include/python2.7"
   )
 
 # Targets to which this target links.

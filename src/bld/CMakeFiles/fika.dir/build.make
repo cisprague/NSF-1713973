@@ -91,6 +91,7 @@ fika_EXTERNAL_OBJECTS =
 fika: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
 fika: CMakeFiles/fika.dir/build.make
 fika: /home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/lib/cspice.a
+fika: /usr/lib/x86_64-linux-gnu/libpython2.7.so
 fika: CMakeFiles/fika.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable fika"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/fika.dir/link.txt --verbose=$(VERBOSE)

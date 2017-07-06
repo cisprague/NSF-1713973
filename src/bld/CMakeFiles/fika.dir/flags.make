@@ -6,5 +6,5 @@ CXX_FLAGS =
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../cor -I/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/include 
+CXX_INCLUDES = -I/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/include -I/home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/matplotlib-cpp -I/usr/include/python2.7 
 

@@ -3,17 +3,16 @@
 # cisprague@ac.jaxa.jp
 
 # version
-cmake_minimum_required(VERSION 3.5)
-
-# project name
-project(Fika)
+cmake_minimum_required(VERSION 3.7)
 
 # headers
-include_directories(../cor)
-include_directories(../req/cspice/include)
+include_directories(../req/cspice/include) # cspice
+include_directories(../req/matplotlib-cpp) # matplotlibcpp
+include_directories(${PYTHON_INCLUDE_DIR}) # python
 
 # programmes
 add_executable(fika ../tst/spc_tst.cpp)
 
 # linkage
 target_link_libraries(fika ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)
+target_link_libraries(fika ${PYTHON_LIBRARY})

@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include "../cor/fika.hpp"
+#include "matplotlibcpp.h"
+namespace plt = matplotlibcpp;
 
 int main(void) {
 
@@ -15,19 +17,14 @@ int main(void) {
   // create planet
   plnt earth("EARTH");
 
-  // print details
-  earth.print();
-
   // compute states
   double et0 = 100;
   double et;
-  for (int i=0; i<100; i++) {
+  for (int i=0; i<2; i++) {
     et = et0 + i*3600;
-    earth.eph(et, "Moon");
-    // message
-    cout << "Time: " << et << endl;
+    earth.eph(et, "SSB");
     cout << earth.state.transpose() << endl;
-
   };
+
   return 0;
 };

@@ -9,7 +9,8 @@
 #include <vector>
 #include <iostream>
 #include <eigen3/Eigen/Dense>
-#include "utl.hpp"
+#include "SpiceUsr.h"
+#include "matplotlibcpp.h"
 
 using namespace std;
 using namespace Eigen;
@@ -33,7 +34,22 @@ class plnt {
     // constructor
     plnt(string name_) {
       name = name_;
-      spc::plnt_info(name, id, radius, mu);
+
+      // find spice id
+      SpiceBoolean found;
+      bodn2c_c(name.c_str(), &id, &found);
+
+      // find radii
+      SpiceInt dim;
+      SpiceDouble radii[3];
+      bodvcd_c(id, "RADII", 3, &dim, radii);
+      radius = (radii[0] + radii[1] + radii[2])/3;
+      radius = radius*1000;
+
+      // find gravitational parametre
+      bodvcd_c(id, "GM", 1, &dim, &mu);
+      mu = mu*pow(1000,3); // convert to m^3/s^2
+
       // message
       cout << "Planet " << name << " (" << this << ") ";
       cout << "constructed." << endl;
@@ -61,6 +77,19 @@ class plnt {
       for (int i=0; i<6; i++) {state(i) = st[i]*1000;};
     };
 
+
+};
+
+// jpl spice
+namespace spc {
+
+  // load kernel
+  void ld_krnl(string fname) {
+    furnsh_c(fname.c_str());
+  };
+
+  // compute acceleration
+  
 
 };
 

@@ -57,38 +57,38 @@ include CMakeFiles/fika.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/fika.dir/flags.make
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o: CMakeFiles/fika.dir/flags.make
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o: /home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o -c /home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o: CMakeFiles/fika.dir/flags.make
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o: /home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o -c /home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp > CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp > CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp -o CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp -o CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.requires:
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.requires:
 
-.PHONY : CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.requires
+.PHONY : CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.requires
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.provides: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.requires
-	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.provides.build
-.PHONY : CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.provides
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.provides: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.requires
+	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.provides.build
+.PHONY : CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.provides
 
-CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.provides.build: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
+CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.provides.build: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o
 
 
 # Object files for target fika
 fika_OBJECTS = \
-"CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o"
+"CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o"
 
 # External object files for target fika
 fika_EXTERNAL_OBJECTS =
 
-fika: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
+fika: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o
 fika: CMakeFiles/fika.dir/build.make
 fika: /home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/lib/cspice.a
 fika: /usr/lib/x86_64-linux-gnu/libpython2.7.so
@@ -101,7 +101,7 @@ CMakeFiles/fika.dir/build: fika
 
 .PHONY : CMakeFiles/fika.dir/build
 
-CMakeFiles/fika.dir/requires: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o.requires
+CMakeFiles/fika.dir/requires: CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o.requires
 
 .PHONY : CMakeFiles/fika.dir/requires
 

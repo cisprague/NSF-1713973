@@ -2,8 +2,8 @@
 // https://cisprague.github.io
 // cisprague@ac.jaxa.jp
 
-#ifndef sc_hpp
-#define sc_hpp
+#ifndef spc_hpp
+#define spc_hpp
 
 #include <vector>
 #include <iostream>
@@ -13,7 +13,7 @@ using namespace std;
 using namespace Eigen;
 
 // fundamental spacecraft
-class spacecraft {
+class Spacecraft {
 
   public:
 
@@ -33,19 +33,19 @@ class spacecraft {
     Controls controls;
 
     // constructor
-    spacecraft(double mass_, double thrust_, double isp_) {
+    Spacecraft(double mass_, double thrust_, double isp_) {
       mass   = mass_;
       thrust = thrust_;
       isp    = isp_;
       cout << "Spacecraft "   << this   << " initialised with constants:\n";
       cout << "Mass = "       << mass   << " [kg]\t";
       cout << "Max Thrust = " << thrust << " [N]\t";
-      cout << "Max Isp = "    << isp    << " [s]" << endl;
+      cout << "Max Isp = "    << isp    << " [s]\n" << endl;
     };
 
     // destructor
-    ~spacecraft(void) {
-      cout << "Spacecraft " << this << " desctructed" << endl;
+    ~Spacecraft(void) {
+      cout << "Spacecraft " << this << " desctructed\n" << endl;
     };
 
     // print details
@@ -53,7 +53,7 @@ class spacecraft {
       cout << "Spacecraft "   << this   << ":\n";
       cout << "Mass = "       << mass   << " [kg]\t";
       cout << "Max Thrust = " << thrust << " [N]\t";
-      cout << "Max Isp = "    << isp    << " [s]" << endl;
+      cout << "Max Isp = "    << isp    << " [s]\n" << endl;
     };
 
     // set constants

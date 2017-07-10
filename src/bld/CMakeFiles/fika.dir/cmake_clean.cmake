@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o"
+  "CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o"
   "fika.pdb"
   "fika"
 )

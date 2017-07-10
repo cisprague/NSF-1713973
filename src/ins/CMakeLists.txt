@@ -11,7 +11,7 @@ include_directories(../req/matplotlib-cpp) # matplotlibcpp
 include_directories(${PYTHON_INCLUDE_DIR}) # python
 
 # programmes
-add_executable(fika ../tst/spc_tst.cpp)
+add_executable(fika ../tst/msn_tst.cpp)
 
 # linkage
 target_link_libraries(fika ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)

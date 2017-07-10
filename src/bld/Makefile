@@ -123,32 +123,32 @@ fika/fast:
 	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/build
 .PHONY : fika/fast
 
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.o: home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.o: home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.o
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.o
 
 # target to build an object file
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o:
-	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.o
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o:
+	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o
 
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.i: home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.i: home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.i
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.i
 
 # target to preprocess a source file
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i:
-	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.i
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i:
+	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.i
 
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.s: home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.s: home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.s
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.s
 
 # target to generate assembly for a file
-home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s:
-	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.cpp.s
+home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s:
+	$(MAKE) -f CMakeFiles/fika.dir/build.make CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... fika"
 	@echo "... edit_cache"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.o"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.i"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/spc_tst.s"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.o"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.i"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.s"
 .PHONY : help
 
 

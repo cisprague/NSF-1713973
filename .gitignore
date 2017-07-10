@@ -1,2 +1,2 @@
-src/build/*
-*.bsp
+src/bld/*
+src/dta/*

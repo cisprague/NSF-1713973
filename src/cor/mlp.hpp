@@ -2,8 +2,8 @@
 // https://cisprague.github.io
 // cisprague@ac.jaxa.jp
 
-#ifndef ml_hpp
-#define ml_hpp
+#ifndef mlp_hpp
+#define mlp_hpp
 
 #include <vector>
 #include <iostream>
@@ -13,7 +13,7 @@ using namespace std;
 using namespace Eigen;
 
 // machine learning
-namespace ml {
+namespace Ml {
 
   // multilayer perceptron
   class mlp {
@@ -27,10 +27,10 @@ namespace ml {
       typedef vector<Layer> Biases;
 
       vector<int> shape; // structure
-      int ni; // # inputs
-      int no; // # ouputs
-      int nl; // # layers
-      int dim; // parametre dimensions
+      int ni;            // # inputs
+      int no;            // # ouputs
+      int nl;            // # layers
+      int dim;           // parametre dimensions
       Weights W;
       Biases B;
 

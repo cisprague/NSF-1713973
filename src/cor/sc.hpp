@@ -2,12 +2,13 @@
 // https://cisprague.github.io
 // cisprague@ac.jaxa.jp
 
-#ifndef spc_hpp
-#define spc_hpp
+#ifndef sc_hpp
+#define sc_hpp
 
 #include <vector>
 #include <iostream>
 #include <eigen3/Eigen/Dense>
+#include <cmath>
 
 using namespace std;
 using namespace Eigen;
@@ -27,6 +28,10 @@ class Spacecraft {
     double mass;   // propellant       [kg]
     double thrust; // max thrust       [N]
     double isp;    // specific impulse [s]
+
+    // constraints
+    const double clb = 0; // lower bound of throttle
+    const double cub = 1; // upper bound of throttle
 
     // cartesian element histories
     States   states;

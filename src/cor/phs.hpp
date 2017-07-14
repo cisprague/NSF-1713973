@@ -6,38 +6,39 @@
 #define phs_hpp
 
 #include <iostream>
-#include "spc.hpp"
+#include "sc.hpp"
+#include "pnt.hpp"
 
 class Phase {
 
   public:
 
     // members
-    Spacecraft & sc;          // spacecraft undertaking leg
-    Spacecraft::State state0; // initial state
-    Spacecraft::State state1; // final state
-    double t0;                // initial time
-    double t1;                // final time
+    Point::State state0; // initial state
+    Point::State state1; // final state
+    double t0;           // initial time
+    double t1;           // final time
+    int    nn;  // collocation nodes
+
 
     // constructor
-    Phase(
-      Spacecraft & sc_,
-      Spacecraft::State s0_,
-      Spacecraft::State s1_,
-      double t0,
-      double t1
-    ) : sc(sc_) {
-      state0 = s0_;
-      state1 = s1_;
-      cout << "Leg " << this << " initialised with Spacecraft " << &sc_ << endl;
-      cout << "Initial state: " << state0.transpose() << endl;
-      cout << "Final state: " << state1.transpose() << "\n" << endl;
+    Phase(void) {
+      cout << "Leg " << this << endl;
     };
 
     // destructor
     ~Phase(void) {
       cout << "Leg " << this << " destroyed.\n" << endl;
     };
+
+    // modify
+    void set(Point::State s0_, Point::State s1_, double t0_, double t1_) {
+      state0 = s0_;
+      state1 = s1_;
+      t0     = t0_;
+      t1     = t1_;
+    };
+
 
 };
 

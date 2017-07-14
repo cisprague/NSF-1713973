@@ -10,7 +10,6 @@
 #include <iostream>
 #include <eigen3/Eigen/Dense>
 #include "SpiceUsr.h"
-//#include "matplotlibcpp.h"
 
 using namespace std;
 using namespace Eigen;
@@ -45,11 +44,12 @@ class Point {
     };
 
     // compute state
-    void eph(double epoch, string obs) {
+    State eph(double epoch, string obs) {
       SpiceDouble lt;
       SpiceDouble st[6];
       spkezr_c(name.c_str(), epoch, "J2000", "NONE", obs.c_str(), st, &lt);
       for (int i=0; i<6; i++) {state(i) = st[i]*1000;};
+      return state;
     };
 
 
@@ -84,11 +84,18 @@ class Body : public Point {
 };
 
 // jpl spice
-namespace spc {
+namespace Spice {
 
   // load kernel
-  void ld_krnl(string fname) {
+  void load_kernel(string fname) {
     furnsh_c(fname.c_str());
+  };
+
+  void load_kernels(void) {
+    load_kernel("../dta/de430.bsp");
+    load_kernel("../dta/gm_de431.tpc");
+    load_kernel("../dta/naif0011.tls");
+    load_kernel("../dta/pck00008.tpc");
   };
 
 };

@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/fika.dir/home/cisprague/Documents/Dev/NSF-1713973/src/tst/msn_tst.cpp.o  -o fika /home/cisprague/Documents/Dev/NSF-1713973/src/ins/../req/cspice/lib/cspice.a /usr/lib/x86_64-linux-gnu/libpython2.7.so 

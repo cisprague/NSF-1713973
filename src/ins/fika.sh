@@ -6,4 +6,4 @@ cmake ../ins
 make
 
 # execute
-./fika
+./prb

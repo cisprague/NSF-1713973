@@ -2,8 +2,8 @@
 // https://cisprague.github.io
 // cisprague@ac.jaxa.jp
 
-#ifndef sc_hpp
-#define sc_hpp
+#ifndef dyn_hpp
+#define dyn_hpp
 
 #include <vector>
 #include <iostream>
@@ -12,6 +12,7 @@
 
 using namespace std;
 using namespace Eigen;
+
 
 // fundamental spacecraft
 class Spacecraft {

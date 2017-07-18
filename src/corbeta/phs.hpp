@@ -15,15 +15,15 @@ class Phase {
 
     // members
     Point::State state0; // initial state
-    Point::State state1; // final state
+    Point::State state1; // final s tate
     double t0;           // initial time
     double t1;           // final time
-    int    nn;  // collocation nodes
-
+    int    nn;           // collocation nodes
 
     // constructor
-    Phase(void) {
-      cout << "Leg " << this << endl;
+    Phase(int nn_) {
+      nn = nn_;
+      cout << "Leg " << this << " constructed \n" << endl;
     };
 
     // destructor

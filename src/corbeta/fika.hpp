@@ -4,7 +4,7 @@
 #ifndef fika_hpp
 #define fika_hpp
 
-#include "sc.hpp"  // spacecraft
+#include "dyn.hpp"  // spacecraft
 #include "pnt.hpp" // points & bodies
 #include "phs.hpp" // phases
 #include "msn.hpp" // missions

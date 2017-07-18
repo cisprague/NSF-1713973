@@ -60,39 +60,39 @@ CMAKE_SOURCE_DIR = /home/cisprague/Documents/Dev/NSF-1713973/src/ins
 CMAKE_BINARY_DIR = /home/cisprague/Documents/Dev/NSF-1713973/src/bld
 
 #=============================================================================
-# Target rules for target CMakeFiles/prb.dir
+# Target rules for target CMakeFiles/ptp.dir
 
 # All Build rule for target.
-CMakeFiles/prb.dir/all:
-	$(MAKE) -f CMakeFiles/prb.dir/build.make CMakeFiles/prb.dir/depend
-	$(MAKE) -f CMakeFiles/prb.dir/build.make CMakeFiles/prb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles --progress-num=1,2 "Built target prb"
-.PHONY : CMakeFiles/prb.dir/all
+CMakeFiles/ptp.dir/all:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/depend
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles --progress-num=1,2 "Built target ptp"
+.PHONY : CMakeFiles/ptp.dir/all
 
 # Include target in all.
-all: CMakeFiles/prb.dir/all
+all: CMakeFiles/ptp.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/prb.dir/rule: cmake_check_build_system
+CMakeFiles/ptp.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/prb.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/ptp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles 0
-.PHONY : CMakeFiles/prb.dir/rule
+.PHONY : CMakeFiles/ptp.dir/rule
 
 # Convenience name for target.
-prb: CMakeFiles/prb.dir/rule
+ptp: CMakeFiles/ptp.dir/rule
 
-.PHONY : prb
-
-# clean rule for target.
-CMakeFiles/prb.dir/clean:
-	$(MAKE) -f CMakeFiles/prb.dir/build.make CMakeFiles/prb.dir/clean
-.PHONY : CMakeFiles/prb.dir/clean
+.PHONY : ptp
 
 # clean rule for target.
-clean: CMakeFiles/prb.dir/clean
+CMakeFiles/ptp.dir/clean:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/clean
+.PHONY : CMakeFiles/ptp.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/ptp.dir/clean
 
 .PHONY : clean
 

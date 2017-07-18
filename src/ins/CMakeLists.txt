@@ -14,11 +14,10 @@ include_directories(../req/cspice/include) # cspice
 #include_directories(/usr/local/include/pagmo/)
 
 # programmes
-#add_executable(tst ../tst/tst.cpp)
-add_executable(prb ../tst/prb_tst.cpp)
+add_executable(ptp ../imp/ptp.cpp)
 
 # linkage
 #link_libraries(/usr/local/lib/libpagmo.so)
 #link_libraries(/usr/local/lib/)
-target_link_libraries(prb ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)
+target_link_libraries(ptp ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)
 #target_link_libraries(fika ${PYTHON_LIBRARY})

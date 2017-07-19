@@ -4,9 +4,11 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <boost/numeric/odeint.hpp>
 #include <stdexcept>
 #include "body.hpp"
 #include "spacecraft.hpp"
+#include "propagator.hpp"
 
 struct Phase {
 
@@ -22,7 +24,8 @@ struct Phase {
 
   // a priori
   const int nseg;
-  const std::vector<Body> bodies;
+  const Spacecraft spacecraft;
+  std::vector<Body> bodies;
 
   // a posteriori
   double t0;
@@ -30,9 +33,13 @@ struct Phase {
   Spacecraft::State state0;
   Spacecraft::State stateN;
   std::vector<Spacecraft::Control> controls;
+  std::vector<Spacecraft::State> states;
 
   // constructor
-  Phase (const int & nseg_) : nseg(nseg_) {
+  Phase (
+    const int & nseg_,
+    const Spacecraft spacecraft_
+  ) : nseg(nseg_), spacecraft(spacecraft_) {
     controls.resize(nseg);
   };
 
@@ -40,42 +47,56 @@ struct Phase {
   ~Phase (void) {};
 
   // set initial time
-  void set_initial_time(const double & t0_) {t0 = t0_;};
+  void set_initial_time (const double & t0_) {t0 = t0_;};
 
   // set final time
-  void set_final_time(const double & tN_) {tN = tN_;};
+  void set_final_time (const double & tN_) {tN = tN_;};
 
   // set both times
-  void set_times(const double & t0_, const double & tN_) {
+  void set_times (const double & t0_, const double & tN_) {
     set_initial_time(t0_);
     set_final_time(tN_);
   };
 
   // set intial state
-  void set_initial_state(const Spacecraft::State state0_) {
+  void set_initial_state (const Spacecraft::State & state0_) {
     state0 = state0_;
   };
 
   // set intial state
-  void set_final_state(const Spacecraft::State stateN_) {
+  void set_final_state (const Spacecraft::State & stateN_) {
     stateN = stateN_;
   };
 
   // set both states
-  void set_states(const Spacecraft::State state0_, const Spacecraft::State stateN_) {
+  void set_states (
+    const Spacecraft::State & state0_,
+    const Spacecraft::State & stateN_
+  ) {
     set_initial_state(state0_);
     set_final_state(stateN_);
   };
 
+  // set states and times
+  void set_phase (
+    const Spacecraft::State & state0_,
+    const Spacecraft::State & stateN_,
+    const double & t0_,
+    const double & tN_
+  ) {
+    set_states(state0_, stateN_);
+    set_times(t0_, tN_);
+  };
+
   // set random controls
-  void set_random_controls(void) {
+  void set_random_controls (void) {
     for (int seg=0; seg<nseg; seg++) {
       controls[seg] = Spacecraft::Control::Random().normalized();
     };
   };
 
   // set controls with throttle vector
-  void set_throttles(const std::vector<double> throttles_) {
+  void set_throttles (const std::vector<double> & throttles_) {
     if (throttles_.size() != nseg*3) {
       throw std::invalid_argument("Throttle vector must match.");
     };
@@ -86,8 +107,48 @@ struct Phase {
     };
   };
 
+  // add gravitational influences
+  void add_body (const Body & body_) {
+    bodies.push_back(body_);
+  };
 
+  // equations of motion
+  void motion (
+    const Spacecraft::State & x_,
+    const Spacecraft::Control & u_,
+    Spacecraft::State & dxdt_,
+    const double t_
+  ) {
+    // first order ode system
+    Spacecraft::Control F = u_*spacecraft.thrust;
+    dxdt_(0) = x_(3); // vx
+    dxdt_(1) = x_(4); // vy
+    dxdt_(2) = x_(5); // vz
+    dxdt_(3) = F(0)/x_(6); // propulsion x
+    dxdt_(4) = F(1)/x_(6); // propulsion y
+    dxdt_(5) = F(2)/x_(6); // propulsion z
+    dxdt_(6) = -F.norm()/(spacecraft.g0*spacecraft.isp); // mass flow rate
+    // assemble gravitational influences
+    Eigen::Vector3d r;
+    double r3;
+    for (int i=0; i<bodies.size(); i++) {
+      r = bodies[i].eph(t_).block(0,0,3,1);
+      r3 = pow(r.norm(), 3);
+      dxdt_(3) += -bodies[i].mu*r(0)/r3;
+      dxdt_(4) += -bodies[i].mu*r(1)/r3;
+      dxdt_(5) += -bodies[i].mu*r(2)/r3;
+    };
+  };
 
+  void propagate(
+    Spacecraft::State & x,
+    const Spacecraft::Control & u,
+    const double t0,
+    const double t1,
+    double dt
+  ) {
+    // to be continued
+  };
 
 };
 

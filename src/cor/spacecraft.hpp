@@ -12,6 +12,7 @@ struct Spacecraft {
   const double mass;
   const double thrust;
   const double isp;
+  const double g0 = 9.80665;
 
   // constructor
   Spacecraft (

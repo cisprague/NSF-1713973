@@ -35,7 +35,7 @@ struct Body {
   ~Body (void) {};
 
   // ephemerides
-  State eph (double mjd2000, std::string obs = "SSB") {
+  State eph (const double mjd2000, const std::string obs = "SSB") {
     SpiceDouble lt;
     SpiceDouble st[6];
     spkezr_c(name.c_str(), mjd2000, "J2000", "NONE", obs.c_str(), st, &lt);

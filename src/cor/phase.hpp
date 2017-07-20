@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include "body.hpp"
 #include "spacecraft.hpp"
-#include "propagator.hpp"
 
 struct Phase {
 
@@ -112,45 +111,106 @@ struct Phase {
     bodies.push_back(body_);
   };
 
-  // equations of motion
-  void motion (
-    const Spacecraft::State & x_,
-    const Spacecraft::Control & u_,
-    Spacecraft::State & dxdt_,
-    const double t_
-  ) {
-    // first order ode system
-    Spacecraft::Control F = u_*spacecraft.thrust;
-    dxdt_(0) = x_(3); // vx
-    dxdt_(1) = x_(4); // vy
-    dxdt_(2) = x_(5); // vz
-    dxdt_(3) = F(0)/x_(6); // propulsion x
-    dxdt_(4) = F(1)/x_(6); // propulsion y
-    dxdt_(5) = F(2)/x_(6); // propulsion z
-    dxdt_(6) = -F.norm()/(spacecraft.g0*spacecraft.isp); // mass flow rate
-    // assemble gravitational influences
-    Eigen::Vector3d r;
-    double r3;
-    for (int i=0; i<bodies.size(); i++) {
-      r = bodies[i].eph(t_).block(0,0,3,1);
-      r3 = pow(r.norm(), 3);
-      dxdt_(3) += -bodies[i].mu*r(0)/r3;
-      dxdt_(4) += -bodies[i].mu*r(1)/r3;
-      dxdt_(5) += -bodies[i].mu*r(2)/r3;
-    };
-  };
-
+  // numerical integration
   void propagate(
     Spacecraft::State & x,
     const Spacecraft::Control & u,
-    const double t0,
-    const double t1,
+    double t0,
+    double t1,
     double dt
   ) {
-    // to be continued
+    ODE sys(u, *this);
+    std::vector<double> _x(x.data(), x.data() + x.rows() * x.cols());
+    std::vector<ODE::state_type> states;
+    std::vector<double> times;
+    boost::numeric::odeint::integrate(sys, _x, t0, t1, dt, ODE_record(states, times));
+    std::cout << "Integration\n";
+    for (int i=0; i<states.size(); i++) {
+      for (int j=0; j<7; j++) {
+        std::cout << states[i][j] << "\t";
+      };
+      std::cout << "\n";
+    };
+
   };
 
+
+  private:
+
+    // odeint workaround
+    struct ODE {
+
+      // definitions
+      typedef std::vector<double> state_type;
+
+      // members
+      const Spacecraft::Control & F;
+      Phase & phase;
+
+      // constructor
+      ODE (
+        const Spacecraft::Control & u_,
+        Phase & phase_
+      ) : F(u_*phase_.spacecraft.thrust), phase(phase_) {};
+
+      // destructor
+      ~ODE (void) {};
+
+      // reimplemented motion
+      void operator () (
+        const state_type & x_,
+        state_type & dxdt_,
+        const double t
+      ) {
+        // first order ode system
+        // NOTE: Eigen routines are not called by odeint
+        //Spacecraft::Control F = u*phase.spacecraft.thrust;
+        dxdt_[0] = x_[3]; // vx
+        dxdt_[1] = x_[4]; // vy
+        dxdt_[2] = x_[5]; // vz
+        dxdt_[3] = F(0)/x_[6]; // propulsion x
+        dxdt_[4] = F(1)/x_[6]; // propulsion y
+        dxdt_[5] = F(2)/x_[6]; // propulsion z
+        dxdt_[6] = -F.norm()/(phase.spacecraft.g0*phase.spacecraft.isp); // mdot
+        // assemble gravitational influences
+        Eigen::Vector3d r;
+        double r3;
+        for (int i=0; i<phase.bodies.size(); i++) {
+          r = phase.bodies[i].eph(t).block(0,0,3,1);
+          r(0) = x_[0] - r(0);
+          r(1) = x_[1] - r(1);
+          r(2) = x_[2] - r(2);
+          r3 = pow(r.norm(), 3);
+          dxdt_[3] += -phase.bodies[i].mu*r(0)/r3;
+          dxdt_[4] += -phase.bodies[i].mu*r(1)/r3;
+          dxdt_[5] += -phase.bodies[i].mu*r(2)/r3;
+        };
+      };
+
+    };
+
+    struct ODE_record {
+
+      // members
+      std::vector<ODE::state_type> & states;
+      std::vector<double> & times;
+
+      // constructor
+      ODE_record (
+        std::vector<ODE::state_type> & states_,
+        std::vector<double> & times_
+      ) : states(states_), times(times_) {};
+
+      // destructor
+      ~ODE_record(void) {};
+
+      void operator () (const ODE::state_type & x, double t) {
+        states.push_back(x);
+        times.push_back(t);
+      };
+
+    };
+
+
 };
-
-
 #endif

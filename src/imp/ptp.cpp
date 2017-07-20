@@ -18,8 +18,9 @@ int main(void) {
 
   // make up state and control
   Spacecraft::Control cont = Spacecraft::Control::Random().normalized();
+  Body::State se = earth.eph(4000);
   Spacecraft::State st;
-  st << earth.eph(4000), sc.mass;
+  st <<  se(0)+earth.radius+35786, se(1)+earth.radius+35786, se(2)+earth.radius, se(3), se(4), se(5), sc.mass;
   double t = 400;
   Spacecraft::State dxdt = Spacecraft::State::Zero();
 
@@ -28,7 +29,7 @@ int main(void) {
   phase.add_body(earth);
   phase.add_body(moon);
   phase.add_body(sun);
-  phase.propagate(st, cont, 0, 50, 0.1);
+  phase.propagate(st, cont, 0, 200, 0.001);
   //phase.motion(st, cont, dxdt, t);
 
   /*

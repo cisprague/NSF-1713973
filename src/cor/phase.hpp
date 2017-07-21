@@ -33,6 +33,7 @@ struct Phase {
   Spacecraft::State stateN;
   std::vector<Spacecraft::Control> controls;
   std::vector<Spacecraft::State> states;
+  std::vector<double> times;
 
   // constructor
   Phase (
@@ -115,102 +116,96 @@ struct Phase {
   void propagate(
     Spacecraft::State & x,
     const Spacecraft::Control & u,
-    double t0,
-    double t1,
-    double dt
-  ) {
-    ODE sys(u, *this);
-    std::vector<double> _x(x.data(), x.data() + x.rows() * x.cols());
-    std::vector<ODE::state_type> states;
-    std::vector<double> times;
-    boost::numeric::odeint::integrate(sys, _x, t0, t1, dt, ODE_record(states, times));
-    std::cout << "Integration\n";
-    for (int i=0; i<states.size(); i++) {
-      for (int j=0; j<7; j++) {
-        std::cout << states[i][j] << "\t";
-      };
-      std::cout << "\n";
-    };
+    const double & t0,
+    const double & t1,
+    const double & dt
+  ) const {
 
+    // set up ODE with control and reference to intrinsics
+    ODE ode(u, *this);
+
+    // set up ODE recorder
+    //ODE_record ode_record();
+
+    // convert eigen vector to std::vector...
+    ODE::state_type xode;
+    xode.resize(7);
+    for (int i=0; i<7; i++) {xode[i] = x(i);};
+    ODE::state_type dxdt;
+
+    ode(xode, dxdt, t0);
+
+    // numerically integrate
+    //boost::numeric::odeint::integrate(ode, xode, t0, t1, dt, display);
   };
 
 
   private:
 
-    // odeint workaround
+    // odeint workaround...
     struct ODE {
 
       // definitions
-      typedef std::vector<double> state_type;
+      typedef std::vector<double> state_type; // for odeint...
 
       // members
-      const Spacecraft::Control & F;
-      Phase & phase;
+      const Spacecraft::Control & F;     // propulsion force vector
+      const double              & veff;  // effective velocity
+      const double              & Fnorm; // propulsion force magnitude
+      const Phase               & phase; // access to phase intrinsics
 
       // constructor
-      ODE (
-        const Spacecraft::Control & u_,
-        Phase & phase_
-      ) : F(u_*phase_.spacecraft.thrust), phase(phase_) {};
+      ODE (const Spacecraft::Control & u_, const Phase & phase_) :
+        phase(phase_),
+        F(u_*phase_.spacecraft.thrust),
+        veff(phase_.spacecraft.isp*phase_.spacecraft.g0),
+        Fnorm(F.norm()) {};
 
       // destructor
       ~ODE (void) {};
 
-      // reimplemented motion
+      // dynamics
       void operator () (
-        const state_type & x_,
-        state_type & dxdt_,
+        const state_type & x,
+        state_type & dxdt,
         const double t
-      ) {
-        // first order ode system
-        // NOTE: Eigen routines are not called by odeint
-        //Spacecraft::Control F = u*phase.spacecraft.thrust;
-        dxdt_[0] = x_[3]; // vx
-        dxdt_[1] = x_[4]; // vy
-        dxdt_[2] = x_[5]; // vz
-        dxdt_[3] = F(0)/x_[6]; // propulsion x
-        dxdt_[4] = F(1)/x_[6]; // propulsion y
-        dxdt_[5] = F(2)/x_[6]; // propulsion z
-        dxdt_[6] = -F.norm()/(phase.spacecraft.g0*phase.spacecraft.isp); // mdot
-        // assemble gravitational influences
-        Eigen::Vector3d r;
+      ) const {
+
+        // propulsion influences
+        dxdt[0] = x[3];        // vx
+        dxdt[1] = x[4];        // vy
+        dxdt[2] = x[5];        // vz
+        dxdt[3] = F(0)/x[6];   // aux
+        dxdt[4] = F(1)/x[6];   // auy
+        dxdt[5] = F(2)/x[6];   // auz
+        dxdt[6] = -Fnorm/veff; // mdot
+
+        // gravitational influences
+        Eigen::Matrix<double,3,1> r;
         double r3;
         for (int i=0; i<phase.bodies.size(); i++) {
           r = phase.bodies[i].eph(t).block(0,0,3,1);
-          r(0) = x_[0] - r(0);
-          r(1) = x_[1] - r(1);
-          r(2) = x_[2] - r(2);
-          r3 = pow(r.norm(), 3);
-          dxdt_[3] += -phase.bodies[i].mu*r(0)/r3;
-          dxdt_[4] += -phase.bodies[i].mu*r(1)/r3;
-          dxdt_[5] += -phase.bodies[i].mu*r(2)/r3;
+          r(0) = x[0] - r(0);
+          r(1) = x[1] - r(1);
+          r(2) = x[2] - r(2);
+          r3  = pow(r.norm(), 3);
+          dxdt[3] -= phase.bodies[i].mu*r(0)/r3;
+          dxdt[4] -= phase.bodies[i].mu*r(1)/r3;
+          dxdt[5] -= phase.bodies[i].mu*r(2)/r3;
+
         };
+
       };
 
     };
 
-    struct ODE_record {
-
-      // members
-      std::vector<ODE::state_type> & states;
-      std::vector<double> & times;
-
-      // constructor
-      ODE_record (
-        std::vector<ODE::state_type> & states_,
-        std::vector<double> & times_
-      ) : states(states_), times(times_) {};
-
-      // destructor
-      ~ODE_record(void) {};
-
-      void operator () (const ODE::state_type & x, double t) {
-        states.push_back(x);
-        times.push_back(t);
+    static void display(const ODE::state_type & x, const double t) {
+      std::cout << t << '\t';
+      for (int i=0; i<7; i++) {
+        std::cout << x[i] << '\t';
       };
-
+      std::cout << '\n' << std::endl;
     };
-
 
 };
 #endif

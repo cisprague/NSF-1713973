@@ -2,6 +2,8 @@
 #define body_hpp
 #include <string>
 #include <eigen3/Eigen/Dense>
+#include <random>
+#include <cmath>
 #include "SpiceUsr.h"
 
 struct Body {
@@ -44,6 +46,59 @@ struct Body {
     return state;
   };
 
+};
+
+// random circular orbit about body at time
+Body::State random_orbit(
+  const Body & body,
+  const double & t,
+  const double & hl = 160e3,
+  const double & hu = 2000e3
+) {
+
+  // random things
+  std::random_device rd;  // for seed
+  std::mt19937 gen(rd()); // mersenne twister engine
+  std::uniform_real_distribution<double> u(0, 1);    // for latitude
+  std::uniform_real_distribution<double> w(0, 1);    // for longitude
+  std::uniform_real_distribution<double> h(hl, hu);  // altitude
+  std::uniform_real_distribution<double> yarb(-1,1); // arbitrary y
+  std::uniform_real_distribution<double> zarb(-1,1); // arbitrary z
+
+  // orbit specifications
+  double theta = 2*M_PI*u(gen);        // latitude
+  double phi   = acos(2*w(gen) - 1);   // longitude
+  double rmag  = h(gen) + body.radius; // geocentric distance
+
+  // geocentric position
+  Eigen::Matrix <double,3,1> r;
+  r(0) = rmag*sin(phi)*cos(theta); // x
+  r(1) = rmag*sin(phi)*sin(theta); // y
+  r(2) = rmag*cos(phi);            // z
+
+  // arbitrary point
+  Eigen::Matrix <double, 3, 1> pa;
+  pa(1) = yarb(gen);                                                // ya
+  pa(2) = zarb(gen);                                                // za
+  pa(0) = r(0) + (-r(1)*(pa(1) - r(1)) - r(2)*(pa(2) - r(2)))/r(0); // xa
+
+  // geocentric velocity direction
+  Eigen::Matrix <double, 3, 1> vhat;
+  vhat = pa - r;
+  vhat = vhat.normalized();
+
+  // geocentric velocity
+  Eigen::Matrix <double, 3, 1> v;
+  v = sqrt(body.mu/r.norm())*vhat;
+
+  // geocentric state
+  Body::State s;
+  s << r, v;
+
+  // barycentric state
+  s += body.eph(t);
+
+  return s;
 };
 
 void load_kernels (void) {

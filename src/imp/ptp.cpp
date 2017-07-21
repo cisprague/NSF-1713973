@@ -9,35 +9,39 @@
 using namespace std;
 
 int main(void) {
+
+  // we load the ephemerides
   load_kernels();
-  Spacecraft sc(400, 400, 400);
+
+  // we create the spacecraft
+  Spacecraft sc(660, 92.3e-3, 3337);
+
+  // we create the phase with segements and the spacecraft
+  Phase phase(20, sc);
+
+  // we set the initial and final times
+  phase.set_times(4000, 4010);
+
+  // we create the planets
   Body earth("Earth");
   Body moon("Moon");
   Body sun("Sun");
-  Phase phase(20, sc);
 
-  // make up state and control
-  Spacecraft::Control cont = Spacecraft::Control::Random().normalized();
-  Body::State se = earth.eph(4000);
-  Spacecraft::State st;
-  st <<  se(0)+earth.radius+35786, se(1)+earth.radius+35786, se(2)+earth.radius, se(3), se(4), se(5), sc.mass;
-  double t = 400;
-  Spacecraft::State dxdt = Spacecraft::State::Zero();
-
-  // use integrator
-  //propogate(st, cont, t);
+  // we make apparent the planets within the phase
   phase.add_body(earth);
   phase.add_body(moon);
   phase.add_body(sun);
-  phase.propagate(st, cont, 0, 200, 0.001);
-  //phase.motion(st, cont, dxdt, t);
 
-  /*
-  phase.set_random_controls();
-  for (int i=0; i<phase.nseg; i++) {
-    std::cout << phase.controls[i].transpose() << std::endl;
-    std::cout << phase.controls[i].norm() << std::endl;
-  };
-  */
+  // we make an arbitrary maximum throttle control
+  Spacecraft::Control control = Spacecraft::Control::Random().normalized();
+
+  // we compute a random circular LEO around Earth at a time
+  Spacecraft::State state;
+  state << random_orbit(earth, 4000), sc.mass;
+
+  // we propagate the controlled dynamics in the phase
+  phase.propagate(state, control, phase.t0, phase.tN, 0.00001);
+
+
   return 0;
 };

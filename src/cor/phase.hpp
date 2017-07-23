@@ -9,9 +9,9 @@
 struct Phase {
 
   // a priori
-  const int               & nseg;
-  const Spacecraft        & spacecraft;
-  const std::vector<Body> & bodies;
+  const int               nseg;
+  const Spacecraft        spacecraft;
+  const std::vector<Body> bodies;
 
   // a posteriori
   std::vector<double> x0;
@@ -30,8 +30,6 @@ struct Phase {
     bodies(bodies_),
     x0(7),
     xN(7) {
-      // NOTE: mu is not being initialised correctly, thus odeint is not working
-      std::cout << bodies_[0].mu << std::endl;
   };
 
   // destructor
@@ -69,17 +67,17 @@ struct Phase {
   ) {set_states(x0_, xN_);set_times(t0_, tN_);};
 
   // propogate phase dynamics
-  void propagate (
+  propagator::Results propagate (
     std::vector<double>       & x0,
     const std::vector<double> & u,
     const double              & t0,
     const double              & tN,
-    const double              & dt
+    const double              & dt,
+    const bool                & display = false
   ) const {
-
     // set up dynamics with constant control
     Dynamics dynamics(u, spacecraft, bodies);
-    propagator::propagate(x0, t0, tN, dt, dynamics);
+    return propagator::propagate(x0, t0, tN, dt, dynamics, display);
   };
 
 };

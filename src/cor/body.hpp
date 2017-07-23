@@ -8,17 +8,17 @@
 struct Body {
 
   // constants
-  const std::string & name;
-  const double      & radius;
-  const double      & mu;
-  const int         & id;
+  const std::string name;
+  const double      radius;
+  const double      mu;
+  const int         id;
 
   // constructor
   Body     (const std::string & name_) :
     name   (name_                    ),
     radius (spice::radius (name_)    ),
     mu     (spice::mu     (name_)    ),
-    id     (spice::id     (name_)    ) {std::cout << mu;};
+    id     (spice::id     (name_)    ) {};
 
   // destructor
   ~Body (void) {};

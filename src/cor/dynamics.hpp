@@ -11,10 +11,10 @@
 struct Dynamics {
 
   // members
-  const std::vector<Body>   & bodies;
-  const double              & nbodies;
-  const std::vector<double> & F;
-  const double              & mdot;
+  const std::vector<Body>   bodies;
+  const double              nbodies;
+  const std::vector<double> F;
+  const double              mdot;
 
   // constructor
   Dynamics (
@@ -63,7 +63,7 @@ struct Dynamics {
       dxdt[4] -= bodies[i].mu*r[1]/r3;
       dxdt[5] -= bodies[i].mu*r[2]/r3;
     };
-
+    
   };
 };
 

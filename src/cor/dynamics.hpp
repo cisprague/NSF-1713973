@@ -11,10 +11,10 @@
 struct Dynamics {
 
   // members
-  const std::vector<Body>   bodies;
-  const double              nbodies;
-  const std::vector<double> F;
-  const double              mdot;
+  const std::vector<Body>   & bodies;
+  const double              & nbodies;
+  const std::vector<double> & F;
+  const double              & mdot;
 
   // constructor
   Dynamics (
@@ -34,10 +34,10 @@ struct Dynamics {
   // dynamics
   void operator () (
     const std::vector<double> & x,
-    std::vector<double> &dxdt,
-    const double & t
-  ) {
-
+    std::vector<double>       & dxdt,
+    const double              & t
+  ) const {
+    dxdt.resize(7);
     // velocity
     dxdt[0] = x[3];
     dxdt[1] = x[4];
@@ -49,11 +49,22 @@ struct Dynamics {
     dxdt[5] = F[2]/x[6];
     dxdt[6] = mdot;
 
-    // tbc
+    // gravity
+    for (int i=0; i<nbodies; i++) {
+      // barycentric position of body
+      std::vector<double> r = bodies[i].position(t);
+      // sc position wrt body
+      r[0] = x[0] - r[0];
+      r[1] = x[1] - r[1];
+      r[2] = x[2] - r[2];
+      // computing cube of norm
+      double r3 = vectools::normpow(r, 3);
+      dxdt[3] -= bodies[i].mu*r[0]/r3;
+      dxdt[4] -= bodies[i].mu*r[1]/r3;
+      dxdt[5] -= bodies[i].mu*r[2]/r3;
+    };
 
   };
-
-
 };
 
 #endif

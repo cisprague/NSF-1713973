@@ -12,7 +12,7 @@ namespace vectools {
 
   void display (const std::vector<double> & vec) {
     for (int i=0; i<vec.size(); i++) {std::cout << vec[i] << '\t';};
-    std::cout << '\n' << std::endl;
+    std::cout << std::endl;
   };
 
   double nsum (const std::vector<double> & vec, const double & n) {
@@ -23,6 +23,10 @@ namespace vectools {
 
   double norm (const std::vector<double> & vec) {
     return sqrt(nsum(vec, 2));
+  };
+
+  double normpow (const std::vector<double> & vec, const double & power) {
+    return pow(norm(vec), power);
   };
 
   std::vector<double> section (

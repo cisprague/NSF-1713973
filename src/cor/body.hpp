@@ -18,7 +18,7 @@ struct Body {
     name   (name_                    ),
     radius (spice::radius (name_)    ),
     mu     (spice::mu     (name_)    ),
-    id     (spice::id     (name_)    ) {};
+    id     (spice::id     (name_)    ) {std::cout << mu;};
 
   // destructor
   ~Body (void) {};
@@ -29,6 +29,22 @@ struct Body {
     const std::string & obs = "SSB"
   ) const {
     return spice::state(mjd2000, name, obs);
+  };
+
+  // position
+  std::vector<double> position (
+    const double & mjd2000,
+    const std::string & obs = "SSB"
+  ) const {
+    return vectools::section(state(mjd2000), 0, 2);
+  };
+
+  // velocity
+  std::vector<double> velocity (
+    const double & mjd2000,
+    const std::string & obs = "SSB"
+  ) const {
+    return vectools::section(state(mjd2000), 3, 5);
   };
 
   // state wrt state

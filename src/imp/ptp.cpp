@@ -2,6 +2,7 @@
 // cisprague@ac.jaxa.jp
 
 #include <iostream>
+#include <vector>
 
 #include "../cor/spice.hpp"
 #include "../cor/spacecraft.hpp"
@@ -9,7 +10,7 @@
 #include "../cor/vectools.hpp"
 #include "../cor/phase.hpp"
 #include "../cor/dynamics.hpp"
-//#include "../cor/propagator.hpp"
+#include "../cor/propagator.hpp"
 
 int main(void) {
 
@@ -17,51 +18,28 @@ int main(void) {
   spice::load_kernels();
 
   // we create the spacecraft
-  Spacecraft sc(660, 92.3e-3, 3337);
+  const Spacecraft sc(660, 92.3e-3, 3337);
 
   // we create the planets
-  Body earth("Earth");
-  Body moon("Moon");
-  Body sun("Sun");
+  std::vector<Body> bodies = {Body("Earth")};
+  std::cout << bodies[0].mu << std::endl;
 
   // we create a phase with segements and a spacecraft
-  Phase phase(20, sc);
+  Phase phase(20, sc, bodies);
 
-  // we add gravitational influence to the phase dynamics
-  phase.add_body(earth);
-  phase.add_body(moon);
-  phase.add_body(sun);
+  // we create an uncontrolled control vector
+  //std::vector<double> u(3,0);
 
-  std::vector<double> control = vectools::random_unit_vec();
-  std::vector<Body> bodies;
-  for (int i=0; i<phase.bodies.size(); i++) {bodies.push_back(phase.bodies[i]);};
+  // we create an initial and final time
+  //double t0 = spice::mjd2000("1/1/2011 00:00:00.000");
+  //double tN = spice::mjd2000("1/1/2012 00:00:00.000");
 
-  Dynamics dyn(control, sc, bodies);
+  // we create an initial state at the L2 point
+  //std::vector<double> x0 = spice::state(t0,"Moon");
+  //x0.push_back(sc.mass);
 
-  //vectools::display(spice::state(spice::mjd2000("1/1/2011 00:00:00.000"),"392"));
-
-
-  // we create the phase with segements and the spacecraft
-  //Phase phase(20, sc);
-
-  // we set the initial and final times
-  //phase.set_times(4000, 4010);
-
-  // we make apparent the planets within the phase
-  //phase.add_body(earth);
-  //phase.add_body(moon);
-  //phase.add_body(sun);
-
-  // we make an arbitrary maximum throttle control
-  //Spacecraft::Control control = Spacecraft::Control::Random().normalized();
-
-  // we compute a random circular LEO around Earth at a time
-  //Spacecraft::State state;
-  //state << random_orbit(earth, 4000), sc.mass;
-
-  // we propagate the controlled dynamics in the phase
-  //propagate(phase, state, control, phase.t0, phase.tN, 0.0001);
-
+  // we propagate the phase dynamics
+  //phase.propagate(x0, u, t0, tN, 0.001);
 
   return 0;
 };

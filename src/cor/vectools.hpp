@@ -11,9 +11,19 @@
 
 namespace vectools {
 
-  void display (const std::vector<double> & vec) {
+  void display_vec (const std::vector<double> & vec) {
     for (int i=0; i<vec.size(); i++) {std::cout << vec[i] << '\t';};
     std::cout << std::endl;
+  };
+
+  void display_mat (const std::vector<std::vector<double>> mat) {
+    for (int row=0; row<mat.size(); ++row) {
+      for (int col=0; col<mat[row].size(); ++col) {
+        std::cout << mat[row][col] << "\t";
+      };
+      std::cout << "\n";
+    };
+    std::cout << "\n" << std::endl;
   };
 
   double nsum (const std::vector<double> & vec, const double & n) {

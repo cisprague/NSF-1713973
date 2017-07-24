@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+/*
 #include "../cor/spice.hpp"
 #include "../cor/spacecraft.hpp"
 #include "../cor/body.hpp"
@@ -11,10 +12,11 @@
 #include "../cor/phase.hpp"
 #include "../cor/dynamics.hpp"
 #include "../cor/propagator.hpp"
+*/
 #include "../cor/mlp.hpp"
 
 int main(void) {
-
+  /*
   // we load the ephemerides
   spice::load_kernels();
 
@@ -42,13 +44,14 @@ int main(void) {
   // we propagate the phase dynamics
   //propagator::Results results = phase.propagate(x0, u, t0, tN, 0.0001, false, 1e-14, 1e-14);
   //phase.plot_traj(results, "Earth");
+  */
 
   // we define the structure the neural network hidden layers
-  const std::vector<int> shape = {5,5};
+  const std::vector<int> shape = {7,5,3};
 
   // we create a neural netwokr with 7 inputs and 3 outputs
-  ML::MLP mlp(shape, 7, 3);
-  std::cout << mlp.w.size() << std::endl;
+  ML::MLP mlp(shape);
+  std::cout << ML::sigmoid(5) << std::endl;
 
   return 0;
 };

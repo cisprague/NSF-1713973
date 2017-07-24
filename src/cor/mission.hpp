@@ -1,3 +1,7 @@
+// Christopher Iliffe Sprague
+// cisprague@ac.jaxa.jp
+// NSF Award 1713973
+
 #ifndef mission_hpp
 #define mission_hpp
 #include <vector>

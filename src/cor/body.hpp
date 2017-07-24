@@ -1,3 +1,7 @@
+// Christopher Iliffe Sprague
+// cisprague@ac.jaxa.jp
+// NSF Award 1713973
+
 #ifndef body_hpp
 #define body_hpp
 #include <string>

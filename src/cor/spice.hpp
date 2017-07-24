@@ -1,5 +1,6 @@
 // Christopher Iliffe Sprague
 // cisprague@ac.jaxa.jp
+// NSF Award 1713973
 
 #ifndef spice_hpp
 #define spice_hpp

@@ -1,3 +1,7 @@
+// Christopher Iliffe Sprague
+// cisprague@ac.jaxa.jp
+// NSF Award 1713973
+
 #ifndef phase_hpp
 #define phase_hpp
 #include <vector>
@@ -5,6 +9,7 @@
 #include "body.hpp"
 #include "dynamics.hpp"
 #include "propagator.hpp"
+#include "matplotlibcpp.h"
 
 struct Phase {
 
@@ -12,6 +17,7 @@ struct Phase {
   const int               nseg;
   const Spacecraft        spacecraft;
   const std::vector<Body> bodies;
+  const int               nbodies;
 
   // a posteriori
   std::vector<double> x0;
@@ -28,9 +34,9 @@ struct Phase {
     nseg(nseg_),
     spacecraft(spacecraft_),
     bodies(bodies_),
+    nbodies(bodies_.size()),
     x0(7),
-    xN(7) {
-  };
+    xN(7) {};
 
   // destructor
   ~Phase (void) {};
@@ -53,10 +59,7 @@ struct Phase {
   void set_states (
     const std::vector<double> & x0_,
     const std::vector<double> & xN_
-  ) {
-    set_initial_state(x0_);
-    set_final_state(xN_);
-  };
+  ) {set_initial_state(x0_); set_final_state(xN_);};
 
   // set states and times
   void set_phase (
@@ -64,7 +67,7 @@ struct Phase {
     const std::vector<double> & xN_,
     const double              & t0_,
     const double              & tN_
-  ) {set_states(x0_, xN_);set_times(t0_, tN_);};
+  ) {set_states(x0_, xN_); set_times(t0_, tN_);};
 
   // propogate phase dynamics
   propagator::Results propagate (
@@ -73,11 +76,48 @@ struct Phase {
     const double              & t0,
     const double              & tN,
     const double              & dt,
-    const bool                & display = false
+    const bool                & display = false,
+    const double              & a_tol = 1e-10,
+    const double              & r_tol = 1e-10
   ) const {
     // set up dynamics with constant control
     Dynamics dynamics(u, spacecraft, bodies);
-    return propagator::propagate(x0, t0, tN, dt, dynamics, display);
+    return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
+  };
+
+  void plot_traj (
+    const propagator::Results & results,
+    const std::string         & persp = "Earth"
+  ) const {
+
+    // number of points
+    const int pts = results.times.size();
+    // state vector
+    std::vector<std::vector<double>> states(6, std::vector<double>(pts));
+    // state of origin
+    std::vector<double> pstate(6);
+
+    // plot spacecraft trajectory
+    for (int i=0; i<pts; ++i) {
+      pstate = spice::state(results.times[i], persp);
+      for (int dim=0; dim<6; ++dim) {
+        states[dim][i] = results.states[i][dim] - pstate[dim];
+      };
+    };
+    matplotlibcpp::named_plot("Spacecraft", states[0], states[1], "k-");
+
+    // plot body trajectories
+    std::vector<double> bstate(6);
+    for (int i=0; i<nbodies; ++i) {
+      for (int j=0; j<pts; ++j) {
+        bstate = bodies[i].state(results.times[j], persp);
+        for (int dim=0; dim<6; ++dim) {states[dim][j] = bstate[dim];};
+      };
+      matplotlibcpp::named_plot(bodies[i].name, states[0], states[1], ".");
+    };
+
+    matplotlibcpp::legend();
+    matplotlibcpp::show();
   };
 
 };

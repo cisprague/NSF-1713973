@@ -1,5 +1,6 @@
 // Christopher Iliffe Sprague
 // cisprague@ac.jaxa.jp
+// NSF Award 1713973
 
 #ifndef propagator_hpp
 #define propagator_hpp
@@ -40,7 +41,7 @@ namespace propagator {
 
     // the records
     const std::vector<std::vector<double>> states;
-    const std::vector<double> times;
+    const std::vector<double>              times;
 
     // constructor
     Results (
@@ -59,7 +60,9 @@ namespace propagator {
     const double        & tN,
     const double        & dt,
     const Dynamics      & dynamics,
-    const bool          & display = false
+    const bool          & display = false,
+    const double        & a_tol = 1e-10,
+    const double        & r_tol = 1e-10
   ) {
 
     // set up records for state and time
@@ -69,8 +72,14 @@ namespace propagator {
     // instantiate a recorder with these references
     Recorder recorder(states, times, display);
 
-    // numerically integrate
-    boost::numeric::odeint::integrate(dynamics, x0, t0, tN, dt, recorder);
+    // set up integrator
+    using namespace boost::numeric::odeint;
+    typedef std::vector<double> state_type;
+    typedef runge_kutta_fehlberg78<state_type> error_stepper_type;
+    integrate_adaptive(
+      make_controlled(a_tol, r_tol, error_stepper_type()),
+      dynamics, x0, t0, tN, dt, recorder
+    );
 
     // use results structure
     return Results(states, times);

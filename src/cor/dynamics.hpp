@@ -1,5 +1,6 @@
 // Christopher Iliffe Sprague
 // cisprague@ac.jaxa.jp
+// NSF Award 1713973
 
 #ifndef dynamics_hpp
 #define dynamics_hpp
@@ -22,10 +23,10 @@ struct Dynamics {
     const Spacecraft          & spacecraft_,
     const std::vector<Body>   & bodies_
   ) :
-    bodies(bodies_),
-    nbodies(bodies_.size()),
-    F(spacecraft_.force(control_)),
-    mdot(spacecraft_.mdot(control_)) {
+    bodies (bodies_                    ),
+    nbodies(bodies_.size()             ),
+    F      (spacecraft_.force(control_)),
+    mdot   (spacecraft_.mdot(control_) ) {
   };
 
   // destructor
@@ -37,7 +38,7 @@ struct Dynamics {
     std::vector<double>       & dxdt,
     const double              & t
   ) const {
-    dxdt.resize(7);
+    //dxdt.resize(7);
     // velocity
     dxdt[0] = x[3];
     dxdt[1] = x[4];
@@ -63,7 +64,7 @@ struct Dynamics {
       dxdt[4] -= bodies[i].mu*r[1]/r3;
       dxdt[5] -= bodies[i].mu*r[2]/r3;
     };
-    
+
   };
 };
 

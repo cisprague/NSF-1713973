@@ -1,3 +1,7 @@
+// Christopher Iliffe Sprague
+// cisprague@ac.jaxa.jp
+// NSF Award 1713973
+
 #ifndef spacecraft_hpp
 #define spacecraft_hpp
 #include "vectools.hpp"

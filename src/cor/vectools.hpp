@@ -1,5 +1,6 @@
 // Christopher Iliffe Sprague
 // cisprague@ac.jaxa.jp
+// NSF Award 1713973
 
 #ifndef vecops_hpp
 #define vecops_hpp

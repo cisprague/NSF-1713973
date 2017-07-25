@@ -4,7 +4,7 @@
 
 #ifndef spacecraft_hpp
 #define spacecraft_hpp
-#include "vectools.hpp"
+#include "linalg.hpp"
 
 struct Spacecraft {
 
@@ -25,11 +25,11 @@ struct Spacecraft {
   ~Spacecraft (void) {};
 
   std::vector<double> force (const std::vector<double> & u) const {
-    return vectools::scaled(u, thrust);
+    return linalg::scaled(u, thrust);
   };
 
   double fmag (const std::vector<double> & u) const {
-    return vectools::norm(force(u));
+    return linalg::norm(force(u));
   };
 
   double mdot (const std::vector<double> & u) const {

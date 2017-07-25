@@ -7,7 +7,7 @@
 #include <string>
 #include "spice.hpp"
 #include "orbits.hpp"
-#include "vectools.hpp"
+#include "linalg.hpp"
 
 struct Body {
 
@@ -40,7 +40,7 @@ struct Body {
     const double & mjd2000,
     const std::string & obs = "SSB"
   ) const {
-    return vectools::section(state(mjd2000), 0, 2);
+    return linalg::section(state(mjd2000), 0, 2);
   };
 
   // velocity
@@ -48,7 +48,7 @@ struct Body {
     const double & mjd2000,
     const std::string & obs = "SSB"
   ) const {
-    return vectools::section(state(mjd2000), 3, 5);
+    return linalg::section(state(mjd2000), 3, 5);
   };
 
   // state wrt state
@@ -56,7 +56,7 @@ struct Body {
     const double & mjd2000,
     const std::vector<double> & sbary
   ) const {
-    return vectools::diff(sbary, state(mjd2000));
+    return linalg::diff(sbary, state(mjd2000));
   };
 
   // random orbit

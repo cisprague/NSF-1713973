@@ -7,7 +7,8 @@
 #include <vector>
 #include <random>
 #include <cmath>
-#include "vectools.hpp"
+#include "linalg.hpp"
+#include "activation.hpp"
 
 // machine learning
 namespace ML {
@@ -15,13 +16,29 @@ namespace ML {
   // multilayer perceptron
   struct MLP {
 
+    // a priori
+    const std::vector<int> shape;   // architecture shape
+    const std::vector<double> refs; // parametres for normalisation
+    const int nl;                   // number of layers
+    const int ni;                   // number of inputs
+    const int no;                   // number of outputs
+
     // a posteriori
     std::vector<std::vector<std::vector<double>>> w; // weights
     std::vector<std::vector<double>>              b; // biases
 
     // constructor
-    MLP (const std::vector<int> & shape) :
-      w(shape.size()-1), b(shape.size()-1) {
+    MLP (
+      const std::vector<int> & shape_,
+      const std::vector<double> & refs_
+    ) :
+      shape(shape_),
+      refs(refs_),
+      nl(shape.size()),
+      ni(shape.front()),
+      no(shape.back()),
+      w(nl-1),
+      b(nl-1) {
 
       // initialise the random number generator
       std::random_device rd;
@@ -31,15 +48,16 @@ namespace ML {
       std::normal_distribution<double> d(0, 1);
 
       // initialise columns of weight matricies and biases
-      for (int i=0; i<shape.size()-1; ++i) {
+      for (int i=0; i<nl-1; ++i) {
         w[i] = std::vector<std::vector<double>>(shape[i+1]);
         b[i] = std::vector<double>(shape[i+1]);
 
-        // initialise rows of weight matricies https://arxiv.org/abs/1502.01852
-        for (int j=0; j<w[i].size(); ++j) {
+        // initialise rows of weight matricies
+        // https://arxiv.org/abs/1502.01852
+        for (int j=0; j<shape[i+1]; ++j) {
           w[i][j] = std::vector<double>(shape[i]);
           b[i][j] = d(gen)*sqrt(2.0/shape[i]);
-          for (int k=0; k<w[i][j].size(); ++k) {
+          for (int k=0; k<shape[i]; ++k) {
             w[i][j][k] = d(gen)*sqrt(2.0/shape[i]);
           };
         };
@@ -50,32 +68,32 @@ namespace ML {
     ~MLP (void) {};
 
     // compute output
-    std::vector<double> compute_output (const std::vector<double> & in) {
-
-      // we start with the input vector
-      std::vector<double> out(in);
-
+    std::vector<double> operator() (std::vector<double> in) {
+      // we normalise the input vector by references
+      in = linalg::normref(in, refs);
       // for each layer except the last
-      for (int i=0; i<w.size(); ++i) {
-
+      for (int i=0; i<nl-1; ++i) {
+        in = linalg::matxvec(w[i], in); // apply weights
+        in = linalg::add(in, b[i]);     // apply biases
+        in = sigmoid_vec(in);           // apply activation
       };
-
-      return out;
+      return in;
     };
 
-  };
-
-  // sigmoid activation function
-  double sigmoid (const double & in) {
-    return 1/(1 + exp(-in));
-  };
-
-  // sigmoid activation for vector
-  std::vector<double> sigmoid_vec (const std::vector<double> & in) {
-    const int nnodes(in.size());
-    std::vector<double> out(nnodes);
-    for (int i=0; i<nnodes; ++i) {out[i] = sigmoid(out[i]);};
-    return out;
+    // assemble full structure vector
+    static std::vector<int> full_struct (
+      const std::vector<int> & hidden_struct,
+      const int & ni,
+      const int & no
+    ) {
+      std::vector<int> full_struct;
+      full_struct.push_back(ni);
+      for (int i=0; i<hidden_struct.size(); ++i) {
+        full_struct.push_back(hidden_struct[i]);
+      };
+      full_struct.push_back(no);
+      return full_struct;
+    };
   };
 
 };

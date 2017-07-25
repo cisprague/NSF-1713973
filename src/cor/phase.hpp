@@ -81,7 +81,7 @@ struct Phase {
     const double              & r_tol = 1e-10
   ) const {
     // set up dynamics with constant control
-    Dynamics dynamics(u, spacecraft, bodies);
+    Dynamics::Constant_Control dynamics(u, spacecraft, bodies);
     return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
   };
 

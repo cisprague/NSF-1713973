@@ -7,7 +7,7 @@
 #include <vector>
 #include <boost/numeric/odeint.hpp>
 #include "dynamics.hpp"
-#include "vectools.hpp"
+#include "linalg.hpp"
 
 namespace propagator {
 
@@ -32,7 +32,7 @@ namespace propagator {
     void operator () (const std::vector<double> & x, const double & t) {
       states.push_back(x);
       times.push_back(t);
-      if (disp) {std::cout << t << std::endl; vectools::display(x);};
+      if (disp) {std::cout << t << std::endl; linalg::display_vec(x);};
     };
 
   };
@@ -59,7 +59,7 @@ namespace propagator {
     const double        & t0,
     const double        & tN,
     const double        & dt,
-    const Dynamics      & dynamics,
+    const Dynamics::Constant_Control      & dynamics,
     const bool          & display = false,
     const double        & a_tol = 1e-10,
     const double        & r_tol = 1e-10

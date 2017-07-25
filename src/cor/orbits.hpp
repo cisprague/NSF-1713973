@@ -7,7 +7,7 @@
 #include <vector>
 #include <random>
 #include <cmath>
-#include "vectools.hpp"
+#include "linalg.hpp"
 
 namespace orbit {
 
@@ -37,7 +37,7 @@ namespace orbit {
     r[1] = rmag*sin(phi)*sin(theta); // y
     r[2] = rmag*cos(phi);            // z
 
-    vectools::display(r);
+    linalg::display_vec(r);
 
     // arbitrary point
     std::vector<double> pa(3);

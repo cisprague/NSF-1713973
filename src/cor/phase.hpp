@@ -81,39 +81,42 @@ struct Phase {
     const double              & r_tol = 1e-10
   ) const {
     // set up dynamics with constant control
-    Dynamics::Constant_Control dynamics(u, spacecraft, bodies);
+    Dynamics::Constant_Control dynamics(bodies, spacecraft, u);
     return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
   };
 
   void plot_traj (
-    const propagator::Results & results,
+    const std::vector<propagator::Results> results,
     const std::string         & persp = "Earth"
   ) const {
 
-    // number of points
-    const int pts = results.times.size();
-    // state vector
-    std::vector<std::vector<double>> states(6, std::vector<double>(pts));
-    // state of origin
-    std::vector<double> pstate(6);
+    for (int k=0; k<results.size(); ++k) {
 
-    // plot spacecraft trajectory
-    for (int i=0; i<pts; ++i) {
-      pstate = spice::state(results.times[i], persp);
-      for (int dim=0; dim<6; ++dim) {
-        states[dim][i] = results.states[i][dim] - pstate[dim];
-      };
-    };
-    matplotlibcpp::named_plot("Spacecraft", states[0], states[1], "k-");
+      // number of points
+      const int pts = results[k].times.size();
+      // state vector
+      std::vector<std::vector<double>> states(6, std::vector<double>(pts));
+      // state of origin
+      std::vector<double> pstate(6);
 
-    // plot body trajectories
-    std::vector<double> bstate(6);
-    for (int i=0; i<nbodies; ++i) {
-      for (int j=0; j<pts; ++j) {
-        bstate = bodies[i].state(results.times[j], persp);
-        for (int dim=0; dim<6; ++dim) {states[dim][j] = bstate[dim];};
+      // plot spacecraft trajectory
+      for (int i=0; i<pts; ++i) {
+        pstate = spice::state(results[k].times[i], persp);
+        for (int dim=0; dim<6; ++dim) {
+          states[dim][i] = results[k].states[i][dim] - pstate[dim];
+        };
       };
-      matplotlibcpp::named_plot(bodies[i].name, states[0], states[1], ".");
+      matplotlibcpp::plot(states[0], states[1], "k-");
+
+      // plot body trajectories
+      std::vector<double> bstate(6);
+      for (int i=0; i<nbodies; ++i) {
+        for (int j=0; j<pts; ++j) {
+          bstate = bodies[i].state(results[k].times[j], persp);
+          for (int dim=0; dim<6; ++dim) {states[dim][j] = bstate[dim];};
+        };
+        matplotlibcpp::plot(states[0], states[1], ".");
+      };
     };
 
     matplotlibcpp::legend();

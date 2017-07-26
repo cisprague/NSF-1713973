@@ -10,6 +10,7 @@
 #include "dynamics.hpp"
 #include "propagator.hpp"
 #include "matplotlibcpp.h"
+#include "controller.hpp"
 
 struct Phase {
 
@@ -85,6 +86,22 @@ struct Phase {
     return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
   };
 
+  // propogate phase dynamics with controller
+  propagator::Results propagate_autonomous (
+    std::vector<double>       & x0,
+    const Controller          & u,
+    const double              & t0,
+    const double              & tN,
+    const double              & dt,
+    const bool                & display = false,
+    const double              & a_tol = 1e-10,
+    const double              & r_tol = 1e-10
+  ) {
+    // set up dynamics with constant control
+    Dynamics::Autonomous_Control dynamics(bodies, spacecraft, u);
+    return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
+  };
+
   void plot_traj (
     const std::vector<propagator::Results> results,
     const std::string         & persp = "Earth"
@@ -115,7 +132,7 @@ struct Phase {
           bstate = bodies[i].state(results[k].times[j], persp);
           for (int dim=0; dim<6; ++dim) {states[dim][j] = bstate[dim];};
         };
-        matplotlibcpp::plot(states[0], states[1], ".");
+        matplotlibcpp::plot(states[0], states[1], "k,");
       };
     };
 

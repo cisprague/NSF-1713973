@@ -8,6 +8,7 @@
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "linalg.hpp"
+#include "controller.hpp"
 
 namespace Dynamics {
 
@@ -105,6 +106,31 @@ namespace Dynamics {
     };
   };
 
+  struct Autonomous_Control : public Ballistic {
+
+    // control
+    Controller controller;
+
+    // constructor
+    Autonomous_Control (
+      const std::vector<Body> & bodies_,
+      const Spacecraft        & spacecraft_,
+      const Controller        & controller_
+    ) : Ballistic(bodies_, spacecraft_), controller(controller_) {};
+
+    // destructor
+    ~Autonomous_Control (void) {};
+
+    // dynamics
+    void operator () (
+      const std::vector<double> & x,
+      std::vector<double>       & dxdt,
+      const double              & t
+    ) {
+      dxdt = ODE(x, controller(x), t, bodies, spacecraft);
+    };
+
+  };
 
 };
 

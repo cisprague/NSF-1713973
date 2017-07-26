@@ -2,7 +2,7 @@
 // cisprague@ac.jaxa.jp
 
 #ifndef controller_hpp
-#define controller
+#define controller_hpp
 #include <cmath>
 #include <iostream>
 #include "mlp.hpp"
@@ -20,16 +20,14 @@ struct Controller {
     m  O --- /
   */
 
-  // members
-  const double thrust;
+  // neural network
   ML::MLP mlp;
 
   // constructor
   Controller (
-    const double              & thrust_,
     const std::vector<int>    & hidden_struct_,
     const std::vector<double> & refs_
-  ) : thrust(thrust_), mlp(ML::MLP::full_struct(hidden_struct_,7,3),refs_) {};
+  ) : mlp(ML::MLP::full_struct(hidden_struct_,7,3),refs_) {};
 
   // destructor
   ~Controller (void) {};
@@ -41,7 +39,7 @@ struct Controller {
     std::vector<double> u(mlp(x));
 
     // compute unit vector parametres
-    const double mag(u[0]*thrust);   // u ∈ [0, thrust]
+    const double mag(u[0]);          // u ∈ [0, 1]
     const double theta(u[1]*2*M_PI); // θ ∈ [0, 2π]
     const double z(u[2]*2 - 1);      // z ∈ [-1, 1]
 

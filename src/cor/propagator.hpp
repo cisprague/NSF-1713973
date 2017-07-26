@@ -54,12 +54,13 @@ namespace propagator {
 
   };
 
+  template <typename T>
   Results propagate (
     std::vector<double> & x0,
     const double        & t0,
     const double        & tN,
     const double        & dt,
-    const Dynamics::Constant_Control      & dynamics,
+    const T             & dynamics,
     const bool          & display = false,
     const double        & a_tol = 1e-10,
     const double        & r_tol = 1e-10

@@ -2,7 +2,7 @@
 
 # make the makefile
 cd ../bld
-cmake ../ins
+cmake -G Ninja ../ins
 make
 
 # execute

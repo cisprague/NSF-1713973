@@ -7,6 +7,8 @@
 #include <vector>
 #include <random>
 #include <cmath>
+#include <stdexcept>
+#include <string>
 #include "linalg.hpp"
 #include "activation.hpp"
 
@@ -28,10 +30,7 @@ namespace ML {
     std::vector<std::vector<double>>              b; // biases
 
     // constructor
-    MLP (
-      const std::vector<int> & shape_,
-      const std::vector<double> & refs_
-    ) :
+    MLP (const std::vector<int> & shape_, const std::vector<double> & refs_) :
       shape(shape_),
       refs(refs_),
       nl(shape.size()),
@@ -39,6 +38,11 @@ namespace ML {
       no(shape.back()),
       w(nl-1),
       b(nl-1) {
+
+      // sanity
+      if (ni != refs_.size()) {
+        throw std::invalid_argument("Dimension of normalisation vector does not match desired dimension of input vector.");
+      };
 
       // initialise the random number generator
       std::random_device rd;
@@ -64,27 +68,41 @@ namespace ML {
       };
     };
 
+    // alternate constructor
+    MLP (
+      const int & ni_,
+      const int & no_,
+      const std::vector<int> & hshape_,
+      const std::vector<double> & refs_
+    ) : MLP(full_struct(ni_, no_, hshape_), refs_) {};
+
     // destructor
     ~MLP (void) {};
 
     // compute output
-    std::vector<double> operator() (std::vector<double> in) {
+    std::vector<double> operator () (std::vector<double> in) const {
+
+      // sanity
+      if (ni != in.size()) {"Input vector dimension does not match dimension of desired input dimension.";};
+
       // we normalise the input vector by references
       in = linalg::normref(in, refs);
+
       // for each layer except the last
       for (int i=0; i<nl-1; ++i) {
         in = linalg::matxvec(w[i], in); // apply weights
         in = linalg::add(in, b[i]);     // apply biases
         in = sigmoid_vec(in);           // apply activation
       };
+
       return in;
     };
 
     // assemble full structure vector
     static std::vector<int> full_struct (
-      const std::vector<int> & hidden_struct,
       const int & ni,
-      const int & no
+      const int & no,
+      const std::vector<int> & hidden_struct
     ) {
       std::vector<int> full_struct;
       full_struct.push_back(ni);

@@ -9,10 +9,12 @@
 #include "../cor/spacecraft.hpp"
 #include "../cor/body.hpp"
 #include "../cor/linalg.hpp"
+#include "../cor/mlp.hpp"
+#include "../cor/controller.hpp"
 //#include "../cor/phase.hpp"
 //#include "../cor/dynamics.hpp"
 //#include "../cor/propagator.hpp"
-#include "../cor/controller.hpp"
+
 
 int main(void) {
 
@@ -21,7 +23,6 @@ int main(void) {
 
   // we create the spacecraft
   const Spacecraft sc(660, 92.3e-3, 3337);
-  //const Spacecraft sc(660, 20, 3337);
 
   // we create the planets
   const std::vector<Body> bodies = {Body("Earth"), Body("Sun"), Body("Moon")};
@@ -40,21 +41,28 @@ int main(void) {
   xN.push_back(sc.mass);
 
   // we define the structure the neural network hidden layers
-  const std::vector<int> shape({20,20,20,20});
-  // we define normalisation paramtres for the network
-  const std::vector<double> refs(bodies.size()*6 + 1, linalg::norm(x0));
-  Controller::Relative control(3, shape, refs);
+  const std::vector<int> hshape = {10,10,10};
 
-  //Dynamics::Autonomous_Control dyn(bodies, sc, control);
+  // we compute the number of inputs
+  const int nbod(bodies.size());
+  const int nin(nbod*6 + 1);
 
+  // we generate a normalisation vector
+  std::vector<double> ref(nin);
+  for (int i=0; i<nbod; ++i) {
+    // we compute the initial state of the body
+    const std::vector<double> sb(bodies[i].state(t0));
+    // we add the relitive spacecraft state
+    const std::vector<double> srel(6);
+    for (int j=0; j<6; ++j) {ref[i*6 + j] = x0[j] - sb[j];};
+  };
+  ref[nin-1] = sc.mass;
 
-  // we propagate the phase dynamics
-  //propagator::Results results1 = phase.propagate_autonomous(x0, control, t0, tN, 0.01, false, 1e-12, 1e-14);
-  //propagator::Results results2 = phase.propagate_autonomous(xN, control, tN, t0, -0.01, false, 1e-14, 1e-14);
-  //const std::vector<propagator::Results> res = {results1, results2};
-  //phase.plot_traj(res, "SSB");
+  // we create a relative neural controller
+  Controller::Relative control(bodies, hshape, ref);
 
-
+  // compute a single control
+  linalg::display_vec(control(xN, tN));
 
   return 0;
 };

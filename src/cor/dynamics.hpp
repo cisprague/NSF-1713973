@@ -106,16 +106,17 @@ namespace Dynamics {
     };
   };
 
+  template<typename T>
   struct Autonomous_Control : public Ballistic {
 
     // control
-    Controller controller;
+    T controller;
 
     // constructor
     Autonomous_Control (
       const std::vector<Body> & bodies_,
       const Spacecraft        & spacecraft_,
-      const Controller        & controller_
+      const T                 & controller_
     ) : Ballistic(bodies_, spacecraft_), controller(controller_) {};
 
     // destructor

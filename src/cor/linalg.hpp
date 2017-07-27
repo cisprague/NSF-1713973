@@ -92,7 +92,7 @@ namespace linalg {
     std::vector<double> vec,
     const std::vector<double> & ref
   ) {
-    for (int i=0; i<vec.size(); ++i) {vec[i] /= ref[i];};
+    for (int i=0; i<vec.size(); ++i) {vec.at(i) /= ref.at(i);};
     return vec;
   };
 

@@ -9,7 +9,7 @@
 #include "dynamics.hpp"
 #include "linalg.hpp"
 
-namespace propagator {
+namespace Propagator {
 
   struct Recorder {
 
@@ -61,9 +61,9 @@ namespace propagator {
     const double        & tN,
     const double        & dt,
     const T             & dynamics,
-    const bool          & display = false,
     const double        & a_tol = 1e-10,
-    const double        & r_tol = 1e-10
+    const double        & r_tol = 1e-10,
+    const bool          & disp = false
   ) {
 
     // set up records for state and time
@@ -71,7 +71,7 @@ namespace propagator {
     std::vector<double>              times;
 
     // instantiate a recorder with these references
-    Recorder recorder(states, times, display);
+    Recorder recorder(states, times, disp);
 
     // set up integrator
     using namespace boost::numeric::odeint;

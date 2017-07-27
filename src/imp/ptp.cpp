@@ -11,9 +11,9 @@
 #include "../cor/linalg.hpp"
 #include "../cor/mlp.hpp"
 #include "../cor/controller.hpp"
-//#include "../cor/phase.hpp"
-//#include "../cor/dynamics.hpp"
-//#include "../cor/propagator.hpp"
+#include "../cor/dynamics.hpp"
+#include "../cor/propagator.hpp"
+#include "../cor/phase.hpp"
 
 
 int main(void) {
@@ -31,11 +31,14 @@ int main(void) {
   //Phase phase(20, sc, bodies);
 
   // we create an initial and final time
-  double t0 = spice::mjd2000("1/1/2019 00:00:00.000");
-  double tN = spice::mjd2000("1/1/2024 00:00:00.000");
+  double t0(spice::mjd2000("1/1/2019 00:00:00.000"));
+  double tN(spice::mjd2000("1/1/2035 00:00:00.000"));
+
+  // define the match point time
+  double tc(t0 + (tN-t0)/2);
 
   // we create an initial state at the L2 point 392
-  std::vector<double> x0(spice::state(t0, "392"));
+  std::vector<double> x0(spice::state(t0, "1"));
   x0.push_back(sc.mass);
   std::vector<double> xN(spice::state(tN, "392"));
   xN.push_back(sc.mass);
@@ -59,10 +62,24 @@ int main(void) {
   ref[nin-1] = sc.mass;
 
   // we create a relative neural controller
-  Controller::Relative control(bodies, hshape, ref);
+  Controller::Relative controller(bodies, hshape, ref);
 
-  // compute a single control
-  linalg::display_vec(control(xN, tN));
+  // we set up the dynamics
+  Dynamics::Autonomous_Control<Controller::Relative> dynamics(bodies, sc, controller);
+
+  // we propogate forwards and backwards to the middle time
+  Propagator::Results res1(Propagator::propagate(x0, t0, tc, 0.001, dynamics, 1e-14, 1e-14));
+  Propagator::Results res2(Propagator::propagate(xN, tN, tc, -0.001, dynamics, 1e-14, 1e-14));
+
+  // we create a phase
+  Phase phase(sc, bodies);
+
+  // we plot the trajectories
+  const std::vector<Propagator::Results> results{res1, res2};
+  phase.plot_traj(results, "SSB");
+
+
+
 
   return 0;
 };

@@ -15,7 +15,6 @@
 struct Phase {
 
   // a priori
-  const int               nseg;
   const Spacecraft        spacecraft;
   const std::vector<Body> bodies;
   const int               nbodies;
@@ -28,11 +27,9 @@ struct Phase {
 
   // constructor
   Phase (
-    const int               & nseg_,
     const Spacecraft        & spacecraft_,
     const std::vector<Body> & bodies_
   ) :
-    nseg(nseg_),
     spacecraft(spacecraft_),
     bodies(bodies_),
     nbodies(bodies_.size()),
@@ -70,8 +67,9 @@ struct Phase {
     const double              & tN_
   ) {set_states(x0_, xN_); set_times(t0_, tN_);};
 
+  /*
   // propogate phase dynamics
-  propagator::Results propagate (
+  Propagator::Results propagate (
     std::vector<double>       & x0,
     const std::vector<double> & u,
     const double              & t0,
@@ -83,13 +81,16 @@ struct Phase {
   ) const {
     // set up dynamics with constant control
     Dynamics::Constant_Control dynamics(bodies, spacecraft, u);
-    return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
+    return Propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
   };
+  */
 
+  /*
   // propogate phase dynamics with controller
-  propagator::Results propagate_autonomous (
+  template <typename T>
+  Propagator::Results propagate_autonomous (
     std::vector<double>       & x0,
-    const Controller          & u,
+    const T                   & u,
     const double              & t0,
     const double              & tN,
     const double              & dt,
@@ -99,11 +100,12 @@ struct Phase {
   ) {
     // set up dynamics with constant control
     Dynamics::Autonomous_Control dynamics(bodies, spacecraft, u);
-    return propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
+    return Propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
   };
+  */
 
   void plot_traj (
-    const std::vector<propagator::Results> results,
+    const std::vector<Propagator::Results> results,
     const std::string         & persp = "Earth"
   ) const {
 

@@ -5,6 +5,7 @@
 #ifndef dynamics_hpp
 #define dynamics_hpp
 #include <vector>
+#include <stdexcept>
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "linalg.hpp"
@@ -19,6 +20,11 @@ namespace Dynamics {
     const std::vector<Body>   & bodies,
     const Spacecraft          & spacecraft
   ) {
+
+    // sanity
+    if (x.size() != 7) {
+      throw std::invalid_argument("State dimension must be 7.");
+    };
 
     // allocate first order system
     std::vector<double> dxdt(7);
@@ -128,7 +134,7 @@ namespace Dynamics {
       std::vector<double>       & dxdt,
       const double              & t
     ) {
-      dxdt = ODE(x, controller(x), t, bodies, spacecraft);
+      dxdt = ODE(x, controller(x, t), t, bodies, spacecraft);
     };
 
   };

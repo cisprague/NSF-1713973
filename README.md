@@ -23,3 +23,7 @@
  # Meta
  
  1. Develop low-energy lunar trajectory optimisation tools with C++ backend and Python frontend.
+
+![](src/orbit2.png)
+![](src/orbit3.png)
+![](src/orbit4.png)

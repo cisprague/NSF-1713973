@@ -97,7 +97,7 @@ namespace Controller {
         const std::vector<double> xb(bodies.at(i).state(t));
         for (int j=0; j<6; ++j) {
           // relative state of spacecraft
-          in.at(i*6+j) = x.at(i) - xb.at(i);
+          in.at(i*6+j) = x.at(j) - xb.at(j);
         };
       };
 

@@ -14,6 +14,7 @@
 #include "../cor/dynamics.hpp"
 #include "../cor/propagator.hpp"
 #include "../cor/phase.hpp"
+#include "../cor/plotting.hpp"
 
 
 int main(void) {
@@ -32,7 +33,7 @@ int main(void) {
 
   // we create an initial and final time
   double t0(spice::mjd2000("1/1/2019 00:00:00.000"));
-  double tN(spice::mjd2000("1/1/2035 00:00:00.000"));
+  double tN(spice::mjd2000("1/1/2040 00:00:00.000"));
 
   // define the match point time
   double tc(t0 + (tN-t0)/2);
@@ -67,16 +68,28 @@ int main(void) {
   // we set up the dynamics
   Dynamics::Autonomous_Control<Controller::Relative> dynamics(bodies, sc, controller);
 
+  // we define an error tolerance
+  const double etol(1e-14);
+
   // we propogate forwards and backwards to the middle time
-  Propagator::Results res1(Propagator::propagate(x0, t0, tc, 0.001, dynamics, 1e-14, 1e-14));
-  Propagator::Results res2(Propagator::propagate(xN, tN, tc, -0.001, dynamics, 1e-14, 1e-14));
+  Propagator::Results res1(Propagator::propagate(x0, t0, tc, 0.001, dynamics, etol, etol));
+  Propagator::Results res2(Propagator::propagate(xN, tN, tc, -0.001, dynamics, etol, etol));
+  const std::vector<Propagator::Results> results{res1, res2};
+  const std::vector<std::vector<double>> times{res1.times, res2.times};
+
+  plot_traj(0, 1, results, bodies);
+  plot_show();
+  plot_traj(0, 2, results, bodies);
+  plot_show();
+  plot_traj(1, 2, results, bodies);
+  plot_show();
 
   // we create a phase
-  Phase phase(sc, bodies);
+  //Phase phase(sc, bodies);
 
   // we plot the trajectories
-  const std::vector<Propagator::Results> results{res1, res2};
-  phase.plot_traj(results, "SSB");
+  //const std::vector<Propagator::Results> results{res1, res2};
+  //phase.plot_traj(results, "SSB");
 
 
 

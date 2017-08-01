@@ -5,13 +5,15 @@
 #ifndef phase_hpp
 #define phase_hpp
 #include <vector>
+#include <cmath>
+#include <utility>
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "dynamics.hpp"
 #include "propagator.hpp"
-#include "matplotlibcpp.h"
 #include "controller.hpp"
 
+template <typename control_type>
 struct Phase {
 
   // a priori
@@ -20,6 +22,7 @@ struct Phase {
   const int               nbodies;
 
   // a posteriori
+  control_type controller;
   std::vector<double> x0;
   std::vector<double> xN;
   double t0;
@@ -28,13 +31,31 @@ struct Phase {
   // constructor
   Phase (
     const Spacecraft        & spacecraft_,
-    const std::vector<Body> & bodies_
+    const std::vector<Body> & bodies_,
+    const control_type      & controller_
   ) :
     spacecraft(spacecraft_),
     bodies(bodies_),
     nbodies(bodies_.size()),
     x0(7),
-    xN(7) {};
+    xN(7),
+    controller(controller_) {};
+
+  // constructor
+  Phase (
+    const Spacecraft & spacecraft_,
+    const std::vector<Body> & bodies_,
+    const control_type & controller_,
+    const std::vector<double> & x0_,
+    const std::vector<double> & xN_,
+    const double & t0_,
+    const double & tN_
+  ) :
+    spacecraft(spacecraft_),
+    bodies(bodies_),
+    nbodies(bodies_.size()),
+    controller(controller_),
+    x0(x0_), xN(xN_), t0(t0_), tN(tN_) {};
 
   // destructor
   ~Phase (void) {};
@@ -67,79 +88,40 @@ struct Phase {
     const double              & tN_
   ) {set_states(x0_, xN_); set_times(t0_, tN_);};
 
-  /*
-  // propogate phase dynamics
-  Propagator::Results propagate (
-    std::vector<double>       & x0,
-    const std::vector<double> & u,
-    const double              & t0,
-    const double              & tN,
-    const double              & dt,
-    const bool                & display = false,
-    const double              & a_tol = 1e-10,
-    const double              & r_tol = 1e-10
-  ) const {
-    // set up dynamics with constant control
-    Dynamics::Constant_Control dynamics(bodies, spacecraft, u);
-    return Propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
+  // propagate forwards and backwards
+  std::pair<Propagator::Results, Propagator::Results> propagate_autonomous (void) {
+
+    // we instantiate the dynamics
+    Dynamics::Autonomous_Control<control_type> dynamics(bodies, spacecraft, controller);
+
+    // we compute the matchpoint time
+    const double tc(t0 + (tN-t0)/2);
+
+    using namespace Propagator;
+    // we propogate forward
+    Results phase1(propagate(x0, t0, tc, 0.001, dynamics));
+    // we propogate backward
+    Results phase2(propagate(xN, tN, tc, -0.001, dynamics));
+
+    // we bundle the results
+    return std::pair<Results, Results>(phase1, phase2);
   };
-  */
 
-  /*
-  // propogate phase dynamics with controller
-  template <typename T>
-  Propagator::Results propagate_autonomous (
-    std::vector<double>       & x0,
-    const T                   & u,
-    const double              & t0,
-    const double              & tN,
-    const double              & dt,
-    const bool                & display = false,
-    const double              & a_tol = 1e-10,
-    const double              & r_tol = 1e-10
-  ) {
-    // set up dynamics with constant control
-    Dynamics::Autonomous_Control dynamics(bodies, spacecraft, u);
-    return Propagator::propagate(x0, t0, tN, dt, dynamics, display, a_tol, r_tol);
-  };
-  */
+  // get mismatch with current controller
+  std::vector<double> mismatch (void) {
 
-  void plot_traj (
-    const std::vector<Propagator::Results> results,
-    const std::string         & persp = "Earth"
-  ) const {
+    // get results
+    std::pair<Propagator::Results, Propagator::Results> results(propagate_autonomous());
 
-    for (int k=0; k<results.size(); ++k) {
+    // define mismatch vector
+    std::vector<double> mismatch(7);
 
-      // number of points
-      const int pts = results[k].times.size();
-      // state vector
-      std::vector<std::vector<double>> states(6, std::vector<double>(pts));
-      // state of origin
-      std::vector<double> pstate(6);
-
-      // plot spacecraft trajectory
-      for (int i=0; i<pts; ++i) {
-        pstate = spice::state(results[k].times[i], persp);
-        for (int dim=0; dim<6; ++dim) {
-          states[dim][i] = results[k].states[i][dim] - pstate[dim];
-        };
-      };
-      matplotlibcpp::plot(states[0], states[1], "k-");
-
-      // plot body trajectories
-      std::vector<double> bstate(6);
-      for (int i=0; i<nbodies; ++i) {
-        for (int j=0; j<pts; ++j) {
-          bstate = bodies[i].state(results[k].times[j], persp);
-          for (int dim=0; dim<6; ++dim) {states[dim][j] = bstate[dim];};
-        };
-        matplotlibcpp::plot(states[0], states[1], "k,");
-      };
+    // compute mismatches
+    for (int i=0, j=0; i<7, j<6; ++i, ++j) {
+      mismatch.at(i) = results.second.states[i].back() - results.first.states[i].back();
     };
 
-    matplotlibcpp::legend();
-    matplotlibcpp::show();
+    return mismatch;
   };
 
 };

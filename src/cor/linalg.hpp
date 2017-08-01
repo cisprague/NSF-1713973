@@ -126,6 +126,31 @@ namespace linalg {
     return uv;
   };
 
+  std::vector<double> random_scaled_unit_vec (const double & scaler) {
+    return scaled(random_unit_vec(), scaler);
+  };
+
+  std::vector<double> normalise (std::vector<double> vec) {
+    // we compute the norm
+    const double normal(norm(vec));
+    // we divide by the norm
+    for (int i=0; i<vec.size(); ++i) {vec[i] /= normal;};
+    return vec;
+  };
+
+  std::vector<double> cross_prod_vec (
+    const std::vector<double> & b,
+    const std::vector<double> & c
+  ) {
+    // create the product vector
+    std::vector<double> a(3);
+    // compute the products
+    a[0] = b[1]*c[2] - b[2]*c[1];
+    a[1] = b[2]*c[0] - b[0]*c[2];
+    a[2] = b[0]*c[1] - b[1]*c[0];
+    return a;
+  };
+
 
 
 };

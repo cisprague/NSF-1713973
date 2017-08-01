@@ -24,6 +24,8 @@ namespace ML {
     const int nl;                   // number of layers
     const int ni;                   // number of inputs
     const int no;                   // number of outputs
+    const int wd;                   // weight dimensions
+    const int bd;                   // bias dimensions
 
     // a posteriori
     std::vector<std::vector<std::vector<double>>> w; // weights
@@ -37,7 +39,9 @@ namespace ML {
       ni(shape.front()),
       no(shape.back()),
       w(nl-1),
-      b(nl-1) {
+      b(nl-1),
+      wd(weight_dim(shape)),
+      bd(bias_dim(shape)) {
 
       // sanity
       if (ni != refs_.size()) {
@@ -112,6 +116,53 @@ namespace ML {
       full_struct.push_back(no);
       return full_struct;
     };
+
+    // weight parameter dimensions
+    static int weight_dim (const std::vector<int> & shape) {
+      int wd(0);
+      for (int i=0; i<shape.size()-1; ++i) {
+        wd += shape[i]*shape[i+1];
+      };
+      return wd;
+    };
+
+    // bias dimensions
+    static int bias_dim (const std::vector<int> & shape) {
+      int bd(0);
+      for (int i=0; i<shape.size()-1; ++i) {
+        bd += shape[i+1];
+      };
+      return bd;
+    };
+
+    // set weights
+    void set_weights (const std::vector<double> & weights) {
+      int count(0);
+      // for each layer
+      for (int i=0; i<nl-1; ++i) {
+        // for each row in matrix
+        for (int j=0; j<shape[i+1]; j++) {
+          // for each column in matrix
+          for (int k=0; k<shape[i]; ++k) {
+            w[i][j][k] = weights[count];
+            ++count;
+          };
+        };
+      };
+    };
+
+    void set_biases (const std::vector<double> & biases) {
+      int count(0);
+      // for each layer
+      for (int i=0; i<nl-1; ++i) {
+        // for each bias
+        for (int j=0; j<shape[i+1]; ++j) {
+          b[i][j] = biases[count];
+          ++count;
+        };
+      };
+    };
+
   };
 
 };

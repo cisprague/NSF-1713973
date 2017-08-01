@@ -15,6 +15,7 @@ namespace Propagator {
 
     // records
     std::vector<std::vector<double>> & states;
+    const int                          dim;
     std::vector<double>              & times;
     const bool                       & disp;
 
@@ -23,14 +24,14 @@ namespace Propagator {
       std::vector<std::vector<double>> & states_,
       std::vector<double>              & times_,
       const bool                       & disp_ = true
-    ) : states(states_), times(times_), disp(disp_) {};
+    ) : states(states_), dim(states.size()), times(times_), disp(disp_) {};
 
     // destructor
     ~Recorder (void) {};
 
     // recorder
     void operator () (const std::vector<double> & x, const double & t) {
-      states.push_back(x);
+      for (int i=0; i<dim; ++i) {states[i].push_back(x[i]);};
       times.push_back(t);
       if (disp) {std::cout << t << std::endl; linalg::display_vec(x);};
     };
@@ -67,7 +68,7 @@ namespace Propagator {
   ) {
 
     // set up records for state and time
-    std::vector<std::vector<double>> states;
+    std::vector<std::vector<double>> states(7);
     std::vector<double>              times;
 
     // instantiate a recorder with these references
@@ -84,7 +85,6 @@ namespace Propagator {
 
     // use results structure
     return Results(states, times);
-
   };
 
 

@@ -11,10 +11,11 @@
 #include "../cor/linalg.hpp"
 #include "../cor/mlp.hpp"
 #include "../cor/controller.hpp"
-#include "../cor/dynamics.hpp"
-#include "../cor/propagator.hpp"
+//#include "../cor/dynamics.hpp"
+//#include "../cor/propagator.hpp"
 #include "../cor/phase.hpp"
-#include "../cor/plotting.hpp"
+//#include "../cor/plotting.hpp"
+#include "matplotlibcpp.h"
 
 
 int main(void) {
@@ -28,12 +29,9 @@ int main(void) {
   // we create the planets
   const std::vector<Body> bodies = {Body("Earth"), Body("Sun"), Body("Moon")};
 
-  // we create a phase with segements and a spacecraft
-  //Phase phase(20, sc, bodies);
-
   // we create an initial and final time
   double t0(spice::mjd2000("1/1/2019 00:00:00.000"));
-  double tN(spice::mjd2000("1/1/2040 00:00:00.000"));
+  double tN(spice::mjd2000("1/1/2025 00:00:00.000"));
 
   // define the match point time
   double tc(t0 + (tN-t0)/2);
@@ -45,7 +43,7 @@ int main(void) {
   xN.push_back(sc.mass);
 
   // we define the structure the neural network hidden layers
-  const std::vector<int> hshape = {10,10,10};
+  const std::vector<int> hshape = {10,10};
 
   // we compute the number of inputs
   const int nbod(bodies.size());
@@ -65,31 +63,35 @@ int main(void) {
   // we create a relative neural controller
   Controller::Relative controller(bodies, hshape, ref);
 
-  // we set up the dynamics
-  Dynamics::Autonomous_Control<Controller::Relative> dynamics(bodies, sc, controller);
+  // we create the mission phase
+  Phase<Controller::Relative> phase(sc, bodies, controller, x0, xN, t0, tN);
 
-  // we define an error tolerance
-  const double etol(1e-14);
+  // propagate forward and backward with random weights
+  using namespace Propagator;
+  std::pair<Results, Results>  res1(phase.propagate_autonomous());
 
-  // we propogate forwards and backwards to the middle time
-  Propagator::Results res1(Propagator::propagate(x0, t0, tc, 0.001, dynamics, etol, etol));
-  Propagator::Results res2(Propagator::propagate(xN, tN, tc, -0.001, dynamics, etol, etol));
-  const std::vector<Propagator::Results> results{res1, res2};
-  const std::vector<std::vector<double>> times{res1.times, res2.times};
+  // we create new weight and bias vectors
+  const std::vector<double> weights(phase.controller.mlp.wd, 0);
+  const std::vector<double> biases(phase.controller.mlp.bd, 0);
+  phase.controller.mlp.set_weights(weights);
+  phase.controller.mlp.set_biases(biases);
 
-  plot_traj(0, 1, results, bodies);
-  plot_show();
-  plot_traj(0, 2, results, bodies);
-  plot_show();
-  plot_traj(1, 2, results, bodies);
-  plot_show();
+  // we propagate forward and backward again
+  std::pair<Results, Results> res2(phase.propagate_autonomous());
 
-  // we create a phase
-  //Phase phase(sc, bodies);
+  // we then plot the different phases
+  matplotlibcpp::plot(res1.first.states[0], res1.first.states[1], "b");
+  matplotlibcpp::plot(res1.second.states[0], res1.second.states[1], "b");
 
-  // we plot the trajectories
-  //const std::vector<Propagator::Results> results{res1, res2};
-  //phase.plot_traj(results, "SSB");
+  matplotlibcpp::plot(res2.first.states[0], res2.first.states[1], "r");
+  matplotlibcpp::plot(res2.second.states[0], res2.second.states[1], "r");
+
+  matplotlibcpp::show();
+
+
+
+
+
 
 
 

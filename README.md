@@ -1,29 +1,15 @@
 ![](https://source.unsplash.com/800x500/?moon)
-
-# Evolutionary Neurocontrol
-
-1. Transcribe the trajectory optimisation problem and neural network parametres into a nonlinear programme (NLP):
- - initial time
- - ending time
- - ending orbital parametres
- - neural network weights and biases
-2. Use a meta-heuristic algorithm to manipulate the NLP parametres.
- - e.g. self-adaptive differential evolution
-3. For each optimiser iteration, propogate the system with the neural network as a reactive controller.
- - using and adaptive numerical integrator, e.g. Runge-Kutta-Fehlberg 78
- - propogate until termination condition, e.g. max duration and/or optimality.
- 
- #  Supervised learning
- 
- 1. Generate database of optimal lunar trajectories to halo orbit from various different initial conditions
-  - low thrust
-  - impulsive
-  - using direct transcription method, e.g. Sim-Flanagan leg from initial position to periapsis/apoapsis.
-  
- # Meta
- 
- 1. Develop low-energy lunar trajectory optimisation tools with C++ backend and Python frontend.
-
 ![](src/orbit2.png)
 ![](src/orbit3.png)
 ![](src/orbit4.png)
+
+
+# A novel approach to trajectory optimisation.
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{300}&space;\pmb{Z}&space;=&space;\left[&space;t_0,&space;t_f,&space;m_f,&space;\{w_{i,j,k},&space;b_{i,j}\}&space;\forall&space;\{i,j,k\}\in\{\mathcal{I},\mathcal{J}_i,&space;\mathcal{K}_i&space;\}]" title="\pmb{Z} = \left[ t_0, t_f, m_f, \{w_{i,j,k}, b_{i,j}\} \forall \{i,j,k\}\in\{\mathcal{I},\mathcal{J}_i, \mathcal{K}_i \}]" />
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{300}&space;\mathcal{I}&space;=&space;\{&space;0,\dots,n_L&space;\}" title="\mathcal{I} = \{ 0,\dots,n_L \}" />
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{300}&space;\mathcal{J}&space;=&space;\{&space;0,\dots,n_{i&plus;1}&space;\}" title="\mathcal{J} = \{ 0,\dots,n_{i+1} \}" />
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{300}&space;\mathcal{K}&space;=&space;\{&space;0,\dots,n_{i}&space;\}" title="\mathcal{K} = \{ 0,\dots,n_{i} \}" />

@@ -180,6 +180,9 @@ Project_BINARY_DIR:STATIC=/home/cisprague/Documents/Dev/NSF-1713973/src/bld
 //Value Computed by CMake
 Project_SOURCE_DIR:STATIC=/home/cisprague/Documents/Dev/NSF-1713973/src/ins
 
+//The directory containing a CMake configuration file for yaml-cpp.
+yaml-cpp_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/yaml-cpp
+
 
 ########################
 # INTERNAL cache entries

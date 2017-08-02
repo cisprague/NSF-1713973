@@ -1,9 +1,16 @@
 #!/bin/bash
 
-# make the makefile
+# enter the build directory
 cd ../bld
+
+# remove previous executable if existing
+rm main
+
+# generate makefile
 cmake ../ins
+
+# execute the make script
 make
 
-# execute
-./ptp
+# execute the programme
+./main

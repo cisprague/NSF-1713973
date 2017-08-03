@@ -7,20 +7,16 @@
 ---
 
 # gravitational influences, i.e. NAIF ID or name
-bodies:
-  - Earth
-  - Moon
-  - Sun
+bodies: [Earth, Moon, Sun]
 
 # spacecraft parametres
 isp:    3337   # specific impulse [s]
-mass:   660    # wet mass [kg]
-thrust: 0.0923 # max thrust [N]
-mf:     12     # final mass [kg]
+mass:   660    # wet mass         [kg]
+thrust: 0.0923 # max thrust       [N]
+mf:     12     # final mass       [kg]
 
 # inner shape of neural network
-netshape:
-  - 5
+netshape: [10, 10, 10]
 
 # epoch times [s]
 t0: "11/12/2004 00:00:00.000"

@@ -17,6 +17,8 @@ namespace spice {
     furnsh_c("../dta/gm_de431.tpc");
     furnsh_c("../dta/naif0011.tls");
     furnsh_c("../dta/pck00008.tpc");
+    furnsh_c("../dta/pck00008.tpc");
+    furnsh_c("../dta/ORMS__041111020517_00206.BSP");
   };
 
   int id (const std::string & name) {

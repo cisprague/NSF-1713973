@@ -163,6 +163,37 @@ namespace ML {
       };
     };
 
+    // get weight vector
+    std::vector<double> get_weights (void) const {
+      // allot weight vector
+      std::vector<double> weights;
+      // for each layer
+      for (int i=0; i<nl-1; ++i) {
+        // for each row in matrix
+        for (int j=0; j<shape[i+1]; ++j) {
+          // for each column in matrix
+          for (int k=0; k<shape[i]; ++k) {
+            weights.push_back(w[i][j][k]);
+          };
+        };
+      };
+      return weights;
+    };
+
+    // get bias vector
+    std::vector<double> get_biases (void) const {
+      // allot bias vector
+      std::vector<double> biases;
+      // for each layer
+      for (int i=0; i<nl-1; ++i) {
+        // for each row in matrix
+        for (int j=0; j<shape[i+1]; ++j) {
+          biases.push_back(b[i][j]);
+        };
+      };
+      return biases;
+    };
+
   };
 
 };

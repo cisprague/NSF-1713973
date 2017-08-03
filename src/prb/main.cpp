@@ -5,13 +5,13 @@
 
 #include <iostream>
 #include "ptp.hpp"
-#include "../cor/phase.hpp"
+#include "../cor/linalg.hpp"
 
 int main(void) {
 
+  // instantiate the problem
   PTP prob("/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.yaml");
-
-  std::cout << prob.phase.controller.mlp.ni << std::endl;
+  linalg::display_vec(prob.get_decision());
 
   return 0;
 };

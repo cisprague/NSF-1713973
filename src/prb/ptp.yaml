@@ -3,33 +3,29 @@
 
 # Optimisation problem parametres for point to point (PTP) spacecraft
 # trajectory optimisation using neural network controller.
-# Z = [t0, tf, mf, {Wᵢ, bᵢ} ∀ i ∈ {0,…,N-1}]
+# Z = [(t0), tf, mf, {Wᵢ, bᵢ} ∀ i ∈ {0,…,N-1}]
 ---
 
-# gravitational influences
+# gravitational influences, i.e. NAIF ID or name
 bodies:
   - Earth
   - Moon
   - Sun
 
-# trajectory parametres
-traj:
-  # NAIF ID or name (e.g. 'Mars' or '499')
-  origin: 1
-  target: 392
-  # trajectory guesses
-  mf: 10                    # final mass
-  t0: 1/1/2019 00:00:00.000 # initial time
-  tf: 1/1/2025 00:00:00.000 # final time
-
-# shape of hidden neural network layers
-netshape:
-  - 10
-  - 10
-  - 10
-
 # spacecraft parametres
-spacecraft:
-  isp: 3337      # specific impulse [s]
-  mass: 660      # mass [kg]
-  thrust: 0.0923 # max thrust [N]
+isp:    3337   # specific impulse [s]
+mass:   660    # wet mass [kg]
+thrust: 0.0923 # max thrust [N]
+mf:     12     # final mass [kg]
+
+# inner shape of neural network
+netshape:
+  - 5
+
+# epoch times [s]
+t0: "11/12/2004 00:00:00.000"
+tf: "8/2/2005 00:00:00.000"
+
+# NAIF ID or name of boundary points (callable by time)
+origin: SMART1
+target: 392

@@ -39,17 +39,17 @@ struct Phase {
     nbodies(bodies_.size()),
     x0(7),
     xN(7),
-    controller(controller_) {};
+    controller(controller_){};
 
   // constructor
   Phase (
-    const Spacecraft & spacecraft_,
-    const std::vector<Body> & bodies_,
-    const control_type & controller_,
+    const Spacecraft          & spacecraft_,
+    const std::vector<Body>   & bodies_,
+    const control_type        & controller_,
     const std::vector<double> & x0_,
     const std::vector<double> & xN_,
-    const double & t0_,
-    const double & tN_
+    const double              & t0_,
+    const double              & tN_
   ) :
     spacecraft(spacecraft_),
     bodies(bodies_),

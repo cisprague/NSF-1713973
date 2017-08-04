@@ -10,112 +10,254 @@
 #include <tuple>
 #include "yaml.h"
 #include "pagmo.hpp"
-
 #include "../cor/spacecraft.hpp"
 #include "../cor/spice.hpp"
 #include "../cor/body.hpp"
 #include "../cor/controller.hpp"
 #include "../cor/phase.hpp"
+#include "../cor/mlp.hpp"
 
+namespace Problems {
 
+  struct PTP {
 
-struct PTP {
+    // constants
+    const std::string origin, target;
+    const std::pair<std::vector<double>, std::vector<double>> bounds;
 
-  // definition
-  typedef std::tuple<double, double, double, std::vector<double>, std::vector<double>> Decision;
+    // manipulated
+    mutable Phase<Controller::Relative> phase;
 
-  // members
-  Phase<Controller::Relative> phase;
+    // constructor
+    PTP (const std::string & fpath) :
+      phase(init(fpath)),
+      origin(init_org(fpath)),
+      target(init_tar(fpath)),
+      bounds(init_bounds(fpath)) {};
 
-  // constructor
-  PTP (const std::string & fpath) : phase(init(fpath)) {};
+    // destructor
+    ~PTP (void) {};
 
-  // destructor
-  ~PTP (void) {};
+    // get current decision
+    std::vector<double> get_decision (void) const {
 
-  // get current decision
-  std::vector<double> get_decision (void) {
+      // create decision vector
+      std::vector<double> dv;
 
-    // create decision vector
-    std::vector<double> dv;
+      // boundary conditions
+      dv.push_back(phase.t0);    // initial time
+      dv.push_back(phase.tN);    // final time
+      dv.push_back(phase.xN[6]); // final mass
 
-    // boundary conditions
-    dv.push_back(phase.t0);    // initial time
-    dv.push_back(phase.tN);    // final time
-    dv.push_back(phase.xN[6]); // final mass
+      // network parametres
+      std::vector<double> weights(phase.controller.mlp.get_weights());
+      std::vector<double> biases(phase.controller.mlp.get_biases());
 
-    // network parametres
-    std::vector<double> weights(phase.controller.mlp.get_weights());
-    std::vector<double> biases(phase.controller.mlp.get_biases());
+      // append weights
+      for (int i=0; i<phase.controller.mlp.wd; ++i) {
+        dv.push_back(weights[i]);
+      };
 
-    // append weights
-    for (int i=0; i<phase.controller.mlp.wd; ++i) {
-      dv.push_back(weights[i]);
+      // append biases
+      for (int i=0; i<phase.controller.mlp.bd; ++i) {
+        dv.push_back(biases[i]);
+      };
+
+      return dv;
     };
 
-    // append biases
-    for (int i=0; i<phase.controller.mlp.bd; ++i) {
-      dv.push_back(biases[i]);
+    // decode decision
+    std::tuple<double, double, double, std::vector<double>, std::vector<double>> decode (const std::vector<double> & decision) const {
+
+      // boundary conditions
+      double t0(decision[0]);
+      double tf(decision[1]);
+      double mf(decision[2]);
+
+      // weights
+      std::vector<double> weights;
+      for (int i=0; i<phase.controller.mlp.wd; ++i) {
+        weights.push_back(decision[3 + i]);
+      };
+
+      // biases
+      std::vector<double> biases;
+      for (int i=0; i<phase.controller.mlp.bd; ++i) {
+        biases.push_back(decision[3 + phase.controller.mlp.wd + i]);
+      };
+
+      // initialise decision tuple
+      return std::tuple<double, double, double, std::vector<double>, std::vector<double>>(t0, tf, mf, weights, biases);
+
     };
 
-    return dv;
-  };
+    // set decision
+    void set_decision (const std::vector<double> & decision) {
 
-  // initialiser
-  static Phase<Controller::Relative> init (const std::string & fpath) {
+      // decode the vector
+      std::tuple<double, double, double, std::vector<double>, std::vector<double>> soln(decode(decision));
 
-    // problem configuration. TODO: fix to use relative path
-    YAML::Node config(YAML::LoadFile(fpath));
+      // parametres
+      double t0(std::get<0>(soln));
+      double tf(std::get<1>(soln));
+      double mf(std::get<2>(soln));
+      std::vector<double> weights(std::get<3>(soln));
+      std::vector<double> biases(std::get<4>(soln));
 
-    // spacecraft
-    double mass  (config["mass"  ].as<double>());
-    double thrust(config["thrust"].as<double>());
-    double isp   (config["isp"   ].as<double>());
-    Spacecraft sc(mass, thrust, isp);
+      // initial state
+      std::vector<double> x0(spice::state(t0, origin));
+      x0.push_back(phase.spacecraft.mass);
 
-    // load ephemerides
-    spice::load_kernels();
+      // terminal state
+      std::vector<double> xf(spice::state(tf, target));
+      xf.push_back(mf);
 
-    // number of bodies
-    int nbod(config["bodies"].size());
+      // set the phase
+      phase.set_phase(x0, xf, t0, tf);
 
-    // body list
-    std::vector<Body> bodies;
+      // set the weights and biases
+      phase.controller.mlp.set_weights(weights);
+      phase.controller.mlp.set_biases(biases);
 
-    // assign bodies
-    for (int i=0; i<nbod; ++i) {
-      bodies.push_back(Body(config["bodies"][i].as<std::string>()));
     };
 
-    // initial and final times
-    double t0(spice::mjd2000(config["t0"].as<std::string>()));
-    double tf(spice::mjd2000(config["tf"].as<std::string>()));
+    //// pagmo ////
 
-    // initial and final states
-    std::vector<double> x0(spice::state(t0, config["origin"].as<std::string>()));
-    x0.push_back(sc.mass);
-    std::vector<double> xf(spice::state(t0, config["target"].as<std::string>()));
-    xf.push_back(config["mf"].as<double>());
+    // fitness
+    std::vector<double> fitness (const std::vector<double> & decision)  {
 
-    // number of control inputs
-    int nin(nbod*6 + 1);
+      // 1) set the decision
+      set_decision(decision);
 
-    // input regularisation vector
-    std::vector<double> ref(nin);
-    for (int i=0; i<nbod; ++i) {
-      // we compute the initial state of the body
-      const std::vector<double> sb(bodies[i].state(t0));
-      // we add the relitive spacecraft state
-      const std::vector<double> srel(6);
-      for (int j=0; j<6; ++j) {ref[i*6 + j] = x0[j] - sb[j];};
+      // 2) compute the objective
+      double obj(decision[2]); // final mass
+
+      // 3) compute equality constraint
+      std::vector<double> eq(phase.mismatch());
+
+      // 4) assemble fitness vector
+      std::vector<double> fit{obj};
+      for (int i=0; i<7; ++i) {fit.push_back(eq.at(i));}
+
+      return fit;
     };
-    ref[nin-1] = sc.mass;
 
-    // relative neural controller
-    Controller::Relative controller(bodies, config["netshape"].as<std::vector<int>>(), ref);
+    //// initialisers ////
+    private:
 
-    // culminating phase
-    return Phase<Controller::Relative>(sc, bodies, controller, x0, xf, t0, tf);
+      // phase initialiser
+      static Phase<Controller::Relative> init (const std::string & fpath) {
+
+        // load configuration file
+        YAML::Node config(YAML::LoadFile(fpath));
+
+        // spacecraft
+        double mass(config["mass"].as<double>());
+        double thrust(config["thrust"].as<double>());
+        double isp(config["isp"].as<double>());
+        Spacecraft sc(mass, thrust, isp);
+
+        // load kernels
+        spice::load_kernels();
+
+        // number of bodies
+        int nbod(config["bodies"].size());
+
+        // body list
+        std::vector<Body> bodies;
+
+        // assign bodies
+        for (int i=0; i<nbod; ++i) {
+          bodies.push_back(Body(config["bodies"][i].as<std::string>()));
+        };
+
+        // initial and final times
+        double t0(spice::mjd2000(config["t0"].as<std::string>()));
+        double tf(spice::mjd2000(config["tf"].as<std::string>()));
+
+        // initial and final states
+        std::vector<double> x0(spice::state(t0, config["origin"].as<std::string>()));
+        x0.push_back(sc.mass);
+        std::vector<double> xf(spice::state(t0, config["target"].as<std::string>()));
+        xf.push_back(config["mf"].as<double>());
+
+        // number of control inputs
+        int nin(nbod*6 + 1);
+
+        // input regularisation vector
+        std::vector<double> ref(nin);
+        for (int i=0; i<nbod; ++i) {
+          // we compute the initial state of the body
+          const std::vector<double> sb(bodies[i].state(t0));
+          // we add the relitive spacecraft state
+          const std::vector<double> srel(6);
+          for (int j=0; j<6; ++j) {ref[i*6 + j] = x0[j] - sb[j];};
+        };
+        ref[nin-1] = sc.mass;
+
+        // relative neural controller
+        Controller::Relative controller(bodies, config["net"].as<std::vector<int>>(), ref);
+
+        // culminating phase
+        return Phase<Controller::Relative>(sc, bodies, controller, x0, xf, t0, tf);
+
+      };
+
+      // init origin
+      static std::string init_org (const std::string & fpath) {
+        YAML::Node config(YAML::LoadFile(fpath));
+        return config["origin"].as<std::string>();
+      };
+
+      // init target
+      static std::string init_tar (const std::string & fpath) {
+        YAML::Node config(YAML::LoadFile(fpath));
+        return config["target"].as<std::string>();
+      };
+
+      // init bounds
+      static std::pair<std::vector<double>, std::vector<double>> init_bounds (const std::string & fpath) {
+
+        // load parametres
+        YAML::Node config(YAML::LoadFile(fpath));
+
+        // load kernels
+        spice::load_kernels();
+
+        // create lower bound
+        std::vector<double> lb{
+          spice::mjd2000(config["t0lb"].as<std::string>()),
+          spice::mjd2000(config["tflb"].as<std::string>()),
+          0
+        };
+
+        // create upper bound
+        std::vector<double> ub {
+          spice::mjd2000(config["t0ub"].as<std::string>()),
+          spice::mjd2000(config["tfub"].as<std::string>()),
+          config["mass"].as<double>()
+        };
+
+        // number of network inputs
+        int ni(config["bodies"].size()*6 + 1);
+
+        // create network shape
+        std::vector<int> shape(ML::MLP::full_struct(ni, 3, config["net"].as<std::vector<int>>()));
+
+        // get weight and bias parametre dimensions
+        int wd(ML::MLP::weight_dim(shape));
+        int bd(ML::MLP::bias_dim(shape));
+
+        // append weight and bias bounds
+        for (int i=0; i<wd; ++i) {lb.push_back(-10); ub.push_back(10);}
+        for (int i=0; i<bd; ++i) {lb.push_back(-10); ub.push_back(10);}
+
+        // create the pair
+        return std::pair<std::vector<double>, std::vector<double>>(lb, ub);
+
+      };
+
+
 
   };
 

@@ -5,6 +5,7 @@
 # version
 cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "-Og")
 
 # programmes
 add_executable(main ../prb/main.cpp)

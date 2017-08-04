@@ -12,6 +12,7 @@
 #include "dynamics.hpp"
 #include "propagator.hpp"
 #include "controller.hpp"
+#include "matplotlibcpp.h"
 
 template <typename control_type>
 struct Phase {
@@ -122,6 +123,50 @@ struct Phase {
     };
 
     return mismatch;
+  };
+
+  void plot (const int & xi, const int & yi, const std::string & persp = "SSB") {
+
+    // get results
+    std::pair<Propagator::Results, Propagator::Results> results(propagate_autonomous());
+    std::vector<Propagator::Results> traj{results.first, results.second};
+
+    // for each segement
+    for (int i=0; i<2; ++i) {
+
+      // times
+      const std::vector<double> t(traj.at(i).times);
+      // number of points
+      const int npts(t.size());
+      // states
+      std::vector<double> x(traj.at(i).states.at(xi));
+      std::vector<double> y(traj.at(i).states.at(yi));
+
+      // for each time
+      for (int j=0; j<npts; ++j) {
+        // compute origin state
+        const std::vector<double> so(spice::state(t.at(j), persp));
+        // compute relative state
+        x.at(j) -= so.at(xi);
+        y.at(j) -= so.at(yi);
+      };
+      // plot the trajectory
+      matplotlibcpp::plot(x, y, "k");
+
+      // for each body
+      for (int j=0; j<nbodies; ++j) {
+        // states
+        std::vector<double> x, y;
+        // for each time
+        for (int k=0; k<npts; ++k) {
+          // compute state
+          x.push_back(bodies.at(j).state(t.at(k), persp).at(xi));
+          y.push_back(bodies.at(j).state(t.at(k), persp).at(yi));
+        };
+        matplotlibcpp::plot(x, y, "k,");
+      };
+    };
+    matplotlibcpp::show();
   };
 
 };

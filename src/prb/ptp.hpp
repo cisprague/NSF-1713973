@@ -28,12 +28,17 @@ namespace Problems {
     // manipulated
     mutable Phase<Controller::Relative> phase;
 
+    // defaulting for PaGMO
+    PTP (void) : PTP("/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.yaml") {};
+
     // constructor
     PTP (const std::string & fpath) :
       phase(init(fpath)),
       origin(init_org(fpath)),
       target(init_tar(fpath)),
-      bounds(init_bounds(fpath)) {};
+      bounds(init_bounds(fpath)) {
+
+      };
 
     // destructor
     ~PTP (void) {};
@@ -47,7 +52,7 @@ namespace Problems {
       // boundary conditions
       dv.push_back(phase.t0);    // initial time
       dv.push_back(phase.tN);    // final time
-      dv.push_back(phase.xN[6]); // final mass
+      dv.push_back(phase.xN.at(6)); // final mass
 
       // network parametres
       std::vector<double> weights(phase.controller.mlp.get_weights());
@@ -92,7 +97,7 @@ namespace Problems {
     };
 
     // set decision
-    void set_decision (const std::vector<double> & decision) {
+    void set_decision (const std::vector<double> & decision) const {
 
       // decode the vector
       std::tuple<double, double, double, std::vector<double>, std::vector<double>> soln(decode(decision));
@@ -124,23 +129,30 @@ namespace Problems {
     //// pagmo ////
 
     // fitness
-    std::vector<double> fitness (const std::vector<double> & decision)  {
-
+    std::vector<double> fitness (const std::vector<double> & decision) const {
       // 1) set the decision
       set_decision(decision);
-
       // 2) compute the objective
-      double obj(decision[2]); // final mass
-
+      double obj(-decision[2]); // final mass
       // 3) compute equality constraint
       std::vector<double> eq(phase.mismatch());
-
       // 4) assemble fitness vector
       std::vector<double> fit{obj};
       for (int i=0; i<7; ++i) {fit.push_back(eq.at(i));}
-
+      linalg::display_vec(fit);
       return fit;
     };
+
+    // bounds
+    std::pair<std::vector<double>, std::vector<double>> get_bounds (void) const {
+      return bounds;
+    };
+
+    // nobj
+    std::vector<double>::size_type get_nobj (void) const {return 1;}
+
+    // nec
+    std::vector<double>::size_type get_nec (void) const {return 7;}
 
     //// initialisers ////
     private:
@@ -178,7 +190,7 @@ namespace Problems {
         // initial and final states
         std::vector<double> x0(spice::state(t0, config["origin"].as<std::string>()));
         x0.push_back(sc.mass);
-        std::vector<double> xf(spice::state(t0, config["target"].as<std::string>()));
+        std::vector<double> xf(spice::state(tf, config["target"].as<std::string>()));
         xf.push_back(config["mf"].as<double>());
 
         // number of control inputs

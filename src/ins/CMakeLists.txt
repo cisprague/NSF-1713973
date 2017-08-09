@@ -19,6 +19,7 @@ include_directories(/usr/local/include/yaml-cpp) # yaml
 include_directories(/usr/include/boost)
 include_directories(/usr/local/include/pagmo)
 #include_directories(/usr/include/coin)
+include_directories(/usr/include/eigen3)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 

@@ -11,11 +11,7 @@
 #include <iostream>
 #include <iomanip>
 #include "yaml.h"
-<<<<<<< HEAD
 
-=======
-#include "pagmo.hpp"
->>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 #include "../cor/spacecraft.hpp"
 #include "../cor/spice.hpp"
 #include "../cor/body.hpp"
@@ -24,7 +20,6 @@
 #include "../cor/mlp.hpp"
 
 namespace Problems {
-<<<<<<< HEAD
 
   struct PTP {
 
@@ -34,36 +29,16 @@ namespace Problems {
 
     // manipulated
     mutable Phase<Controller::Relative> phase;
-=======
-
-  struct PTP {
-
-    // constants
-    const std::string origin, target;
-    const std::pair<std::vector<double>, std::vector<double>> bounds;
-
-    // manipulated
-    mutable Phase<Controller::Relative> phase;
-
-    // defaulting for PaGMO
-    PTP (void) : PTP("/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.yaml") {};
->>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 
     // constructor
     PTP (const std::string & fpath) :
       phase(init(fpath)),
       origin(init_org(fpath)),
       target(init_tar(fpath)),
-<<<<<<< HEAD
       bounds(init_bounds(fpath)) {};
 
     // defaulting for PaGMO
     PTP (void) : PTP("../dta/ptp/config.yaml") {};
-=======
-      bounds(init_bounds(fpath)) {
-
-      };
->>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 
     // destructor
     ~PTP (void) {};
@@ -123,7 +98,6 @@ namespace Problems {
 
     // set decision
     void set_decision (const std::vector<double> & decision) const {
-<<<<<<< HEAD
 
       // decode the vector
       std::tuple<double, double, double, std::vector<double>, std::vector<double>> soln(decode(decision));
@@ -224,63 +198,6 @@ namespace Problems {
       // set the decision
       set_decision(dec["decision"].as<std::vector<double>>());
     };
-=======
-
-      // decode the vector
-      std::tuple<double, double, double, std::vector<double>, std::vector<double>> soln(decode(decision));
-
-      // parametres
-      double t0(std::get<0>(soln));
-      double tf(std::get<1>(soln));
-      double mf(std::get<2>(soln));
-      std::vector<double> weights(std::get<3>(soln));
-      std::vector<double> biases(std::get<4>(soln));
-
-      // initial state
-      std::vector<double> x0(spice::state(t0, origin));
-      x0.push_back(phase.spacecraft.mass);
-
-      // terminal state
-      std::vector<double> xf(spice::state(tf, target));
-      xf.push_back(mf);
-
-      // set the phase
-      phase.set_phase(x0, xf, t0, tf);
-
-      // set the weights and biases
-      phase.controller.mlp.set_weights(weights);
-      phase.controller.mlp.set_biases(biases);
-
-    };
-
-    //// pagmo ////
-
-    // fitness
-    std::vector<double> fitness (const std::vector<double> & decision) const {
-      // 1) set the decision
-      set_decision(decision);
-      // 2) compute the objective
-      double obj(-decision[2]); // final mass
-      // 3) compute equality constraint
-      std::vector<double> eq(phase.mismatch());
-      // 4) assemble fitness vector
-      std::vector<double> fit{obj};
-      for (int i=0; i<7; ++i) {fit.push_back(eq.at(i));}
-      linalg::display_vec(fit);
-      return fit;
-    };
-
-    // bounds
-    std::pair<std::vector<double>, std::vector<double>> get_bounds (void) const {
-      return bounds;
-    };
-
-    // nobj
-    std::vector<double>::size_type get_nobj (void) const {return 1;}
-
-    // nec
-    std::vector<double>::size_type get_nec (void) const {return 7;}
->>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 
     //// initialisers ////
     private:

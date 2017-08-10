@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named ptp
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main
-.PHONY : main
+ptp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ptp
+.PHONY : ptp
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+ptp/fast:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/build
+.PHONY : ptp/fast
 
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.o: home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.o
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.o: home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.o
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.o
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.o
 
 # target to build an object file
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.o
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.o
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.o:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.o
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.o
 
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.i: home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.i
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.i: home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.i
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.i
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.i
 
 # target to preprocess a source file
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.i
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.i
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.i:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.i
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.i
 
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.s: home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.s
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.s: home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.s
 
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.s
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.s
 
 # target to generate assembly for a file
-home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.s
-.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.cpp.s
+home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.s:
+	$(MAKE) -f CMakeFiles/ptp.dir/build.make CMakeFiles/ptp.dir/home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.s
+.PHONY : home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.cpp.s
 
 # Help Target
 help:
@@ -157,11 +157,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... main"
+	@echo "... ptp"
 	@echo "... edit_cache"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.o"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.i"
-	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/main.s"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.o"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.i"
+	@echo "... home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.s"
 .PHONY : help
 
 

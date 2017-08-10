@@ -22,7 +22,7 @@ void plot_traj (
   const int npts(results.times.size());
 
   // allot the trajectory
-  std::vector<std::vector<double>> traj(7, std::vector<double>(npts));
+  std::vector<std::vector<double>> traj(6, std::vector<double>(npts));
 
 
   // compute plotting pts
@@ -34,7 +34,7 @@ void plot_traj (
     // compute state of spacecraft
     const std::vector<double> ss(results.states[i]);
     // compute the relative spacecraft state
-    for (int j=0; j<7; ++j) {
+    for (int j=0; j<6; ++j) {
       // assign relative state to trajectory
       traj[j][i] = ss[j] - sb[j];
     };
@@ -72,7 +72,7 @@ void plot_traj (
   const int npts(times.size());
 
   // allot the trajectory
-  std::vector<std::vector<double>> traj(6, std::vector<double>(npts));
+  std::vector<std::vector<double>> traj(6);
 
   // compute the trajectory
   for (int i=0; i<npts; ++i) {
@@ -80,7 +80,7 @@ void plot_traj (
     const std::vector<double> sb(body.state(times[i], persp));
     // assign trajectory
     for (int j=0; j<6; ++j) {
-      traj[j][i] = sb[j];
+      traj[j].push_back(sb[j]);
     };
   };
 

@@ -1,7 +1,7 @@
 ![](https://source.unsplash.com/1920x1200/?moon)
-![](src/orbit2.png)
-![](src/orbit3.png)
-![](src/orbit4.png)
+![](src/img/orbit2.png)
+![](src/img/orbit3.png)
+![](src/img/orbit4.png)
 
 # A novel approach to trajectory optimisation.
 

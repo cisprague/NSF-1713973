@@ -12,6 +12,8 @@
 #include "dynamics.hpp"
 #include "propagator.hpp"
 #include "controller.hpp"
+#include "linalg.hpp"
+#include "matplotlibcpp.h"
 
 template <typename control_type>
 struct Phase {
@@ -22,11 +24,11 @@ struct Phase {
   const int               nbodies;
 
   // a posteriori
-  control_type controller;
+  control_type        controller;
   std::vector<double> x0;
   std::vector<double> xN;
-  double t0;
-  double tN;
+  double              t0;
+  double              tN;
 
   // constructor
   Phase (
@@ -88,6 +90,9 @@ struct Phase {
     const double              & tN_
   ) {set_states(x0_, xN_); set_times(t0_, tN_);};
 
+
+  //// methods ////
+
   // propagate forwards and backwards
   std::pair<Propagator::Results, Propagator::Results> propagate_autonomous (void) {
 
@@ -95,7 +100,7 @@ struct Phase {
     Dynamics::Autonomous_Control<control_type> dynamics(bodies, spacecraft, controller);
 
     // we compute the matchpoint time
-    const double tc(t0 + (tN-t0)/2);
+    double tc(t0 + (tN-t0)/2);
 
     using namespace Propagator;
     // we propogate forward
@@ -111,17 +116,37 @@ struct Phase {
   std::vector<double> mismatch (void) {
 
     // get results
-    std::pair<Propagator::Results, Propagator::Results> results(propagate_autonomous());
+    const std::pair<Propagator::Results, Propagator::Results> results(propagate_autonomous());
 
     // define mismatch vector
-    std::vector<double> mismatch(7);
+    std::vector<double> mismatch;
 
     // compute mismatches
-    for (int i=0, j=0; i<7, j<6; ++i, ++j) {
-      mismatch.at(i) = results.second.states[i].back() - results.first.states[i].back();
+    for (int i=0; i<7; ++i) {
+      mismatch.push_back(
+        results.second.states.at(i).back() - results.first.states.at(i).back()
+      );
     };
-
     return mismatch;
+  };
+
+  void plot (const int & xi, const int & yi, const std::string & persp = "SSB") {
+
+    // propagate results
+    const std::pair<Propagator::Results, Propagator::Results> segs(propagate_autonomous());
+
+    // plot results
+    segs.first.plot(xi, yi, persp, "r");
+    segs.second.plot(xi, yi, persp, "b");
+
+    // assemble time
+    const std::vector<std::vector<double>> times{segs.first.times, segs.second.times};
+
+    for (int i=0; i<nbodies; ++i) {bodies.at(i).plot(xi, yi, times, persp);};
+
+    matplotlibcpp::show();
+
+
   };
 
 };

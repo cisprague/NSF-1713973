@@ -4,7 +4,7 @@
 cd ../bld
 
 # remove previous executable if existing
-rm main
+rm ptp
 
 # generate makefile
 cmake ../ins
@@ -13,4 +13,5 @@ cmake ../ins
 make
 
 # execute the programme
-./main
+cd ../bin
+./ptp

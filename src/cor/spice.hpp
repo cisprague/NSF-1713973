@@ -13,10 +13,8 @@ namespace spice {
   void load_kernels (void) {
     furnsh_c("../dta/spice/de430.bsp");
     furnsh_c("../dta/spice/L2_de431.bsp");
-    furnsh_c("../dta/spice/de421.bsp");
     furnsh_c("../dta/spice/gm_de431.tpc");
     furnsh_c("../dta/spice/naif0011.tls");
-    furnsh_c("../dta/spice/pck00008.tpc");
     furnsh_c("../dta/spice/pck00008.tpc");
     furnsh_c("../dta/spice/ORMS__041111020517_00206.BSP");
   };

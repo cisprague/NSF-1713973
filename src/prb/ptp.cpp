@@ -17,28 +17,25 @@ int main(void) {
   // instantiate the problem
   Problems::PTP prob("../dta/ptp/config.yaml");
 
-  std::cout << prob.get_decision().at(2) << std::endl;
-  prob.load_decision();
-  std::cout << prob.get_decision().at(2) << std::endl;
-
   // create an unconstrained pagmo problem
-  //pagmo::unconstrain pagmo_problem(prob);
+  pagmo::unconstrain pagmo_problem(prob);
 
   // create population
-  //pagmo::population pop(pagmo_problem, 10);
+  pagmo::population pop(pagmo_problem, 10);
 
   // instantiate an algorithm
-  //pagmo::sade algo(20);
-  //algo.set_verbosity(1);
-  //pop = algo.evolve(pop);
+  pagmo::sade algo(20);
+  algo.set_verbosity(1);
+  pop = algo.evolve(pop);
 
 
 
 
-  //prob.set_decision(pop.champion_x());
-  //prob.save_decision();
-  //prob.phase.plot(0, 1);
-
+  prob.set_decision(pop.champion_x());
+  prob.save_decision();
+  prob.phase.plot(0, 1);
+  prob.phase.plot(1, 2);
+  prob.phase.plot(0, 2);
 
 
   return 0;

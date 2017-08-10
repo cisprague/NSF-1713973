@@ -6,7 +6,10 @@
 cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og")
+<<<<<<< HEAD
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
+=======
+>>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 
 # programmes
 add_executable(ptp ../prb/ptp.cpp)
@@ -20,6 +23,10 @@ include_directories(../req/matplotlib-cpp) # matplotlibcpp
 include_directories(/usr/local/include/yaml-cpp) # yaml
 include_directories(/usr/include/boost)
 include_directories(/usr/local/include/pagmo)
+<<<<<<< HEAD
+=======
+#include_directories(/usr/include/coin)
+>>>>>>> 8d51e886e1b67c592b6429acafa9f2940534d464
 include_directories(/usr/include/eigen3)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})

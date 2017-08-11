@@ -1,3 +1,0 @@
-/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles/rebuild_cache.dir
-/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles/ptp.dir
-/home/cisprague/Documents/Dev/NSF-1713973/src/bld/CMakeFiles/edit_cache.dir

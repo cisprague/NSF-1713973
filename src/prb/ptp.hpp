@@ -18,6 +18,7 @@
 #include "../cor/controller.hpp"
 #include "../cor/phase.hpp"
 #include "../cor/mlp.hpp"
+#include "../cor/constants.hpp"
 
 namespace Problems {
 
@@ -209,10 +210,10 @@ namespace Problems {
         YAML::Node config(YAML::LoadFile(fpath));
 
         // spacecraft
-        double mass(config["mass"].as<double>());
-        double thrust(config["thrust"].as<double>());
-        double isp(config["isp"].as<double>());
-        Spacecraft sc(mass, thrust, isp);
+        const double mass(config["mass"].as<double>());
+        const double thrust(config["thrust"].as<double>());
+        const double isp(config["isp"].as<double>());
+        const Spacecraft sc(mass, thrust, isp);
 
         // load kernels
         spice::load_kernels();
@@ -238,19 +239,13 @@ namespace Problems {
         std::vector<double> xf(spice::state(tf, config["target"].as<std::string>()));
         xf.push_back(config["mf"].as<double>());
 
-        // number of control inputs
-        int nin(nbod*6 + 1);
-
         // input regularisation vector
-        std::vector<double> ref(nin);
+        std::vector<double> ref;
         for (int i=0; i<nbod; ++i) {
-          // we compute the initial state of the body
-          const std::vector<double> sb(bodies[i].state(t0));
-          // we add the relitive spacecraft state
-          const std::vector<double> srel(6);
-          for (int j=0; j<6; ++j) {ref[i*6 + j] = x0[j] - sb[j];};
+          for (int j=0; j<3; ++j) {ref.push_back(R_EARTH);};
+          for (int j=0; j<3; ++j) {ref.push_back(V_EARTH);};
         };
-        ref[nin-1] = sc.mass;
+        ref.push_back(sc.mass);
 
         // relative neural controller
         Controller::Relative controller(bodies, config["net"].as<std::vector<int>>(), ref);
@@ -306,8 +301,8 @@ namespace Problems {
         int bd(ML::MLP::bias_dim(shape));
 
         // append weight and bias bounds
-        for (int i=0; i<wd; ++i) {lb.push_back(-10); ub.push_back(10);}
-        for (int i=0; i<bd; ++i) {lb.push_back(-10); ub.push_back(10);}
+        for (int i=0; i<wd; ++i) {lb.push_back(-2); ub.push_back(2);}
+        for (int i=0; i<bd; ++i) {lb.push_back(-2); ub.push_back(2);}
 
         // create the pair
         return std::pair<std::vector<double>, std::vector<double>>(lb, ub);

@@ -4,12 +4,15 @@
 
 # version
 cmake_minimum_required(VERSION 3.7)
+
+# options
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og")
+set(CMAKE_CXX_FLAGS "-pthread")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 
-# programmes
-add_executable(ptp ../prb/ptp.cpp)
+# tests
+add_executable(constants ../tests/constants.cpp)
 
 
 find_package(PythonLibs 2.7)

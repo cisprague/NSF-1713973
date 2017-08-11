@@ -10,13 +10,13 @@
 bodies: [Earth, Moon, Sun]
 
 # spacecraft parametres
-isp:    3337   # specific impulse [s]
-mass:   660    # wet mass         [kg]
-thrust: 0.0923 # max thrust       [N]
+isp:    243   # specific impulse [s]
+mass:   8165    # wet mass         [kg]
+thrust: 68.17e3 # max thrust       [N]
 mf:     500    # final mass       [kg]
 
 # inner shape of neural network
-net: [20, 20]
+net: [10, 10]
 
 # epoch times [s]
 t0:   "11/12/2004 00:00:00.000"
@@ -24,14 +24,10 @@ t0lb: "11/12/2004 00:00:00.000"
 t0ub: "11/12/2004 00:00:00.000"
 
 # terminal times [s]
-tf:   "8/2/2005 00:00:00.000"
+tf:   "8/2/2020 00:00:00.000"
 tflb: "11/12/2004 00:00:00.000"
-tfub: "8/2/2015 00:00:00.000"
+tfub: "8/2/2040 00:00:00.000"
 
 # NAIF ID or name of boundary points (callable by time)
-origin: SMART1
+origin: 1
 target: 392
-
-# file locations
-path: /home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.yaml
-decision: /home/cisprague/Documents/Dev/NSF-1713973/src/prb/ptp.txt

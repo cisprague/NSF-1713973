@@ -1,7 +1,3 @@
-// Christopher Iliffe Sprague
-// cisprague@ac.jaxa.jp
-// NSF Award 1713973
-
 #ifndef spice_hpp
 #define spice_hpp
 #include <string>
@@ -11,12 +7,12 @@
 namespace spice {
 
   void load_kernels (void) {
-    furnsh_c("../dta/spice/DE.bsp");
-    furnsh_c("../dta/spice/GM.tpc");
-    furnsh_c("../dta/spice/L2.bsp");
-    furnsh_c("../dta/spice/LS.tls");
-    furnsh_c("../dta/spice/ORMS.bsp");
-    furnsh_c("../dta/spice/PCK.tpc");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/DE.bsp");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/GM.tpc");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/L2.bsp");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/LS.tls");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/ORMS.bsp");
+    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/dta/spice/PCK.tpc");
   };
 
   int id (const std::string & name) {
@@ -48,7 +44,6 @@ namespace spice {
     const std::string & targ,
     const std::string & obs = "SSB"
   ) {
-    load_kernels();
     double lt;
     double st[6];
     spkezr_c(targ.c_str(), mjd2000, "J2000", "NONE", obs.c_str(), st, &lt);

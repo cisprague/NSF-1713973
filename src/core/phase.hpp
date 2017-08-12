@@ -17,12 +17,15 @@ struct Phase {
   // constructor
   Phase (
     const Spacecraft & spacecraft_,
-    const std::vector<Body> & bodies_
+    const std::vector<Body> & bodies_,
+    const double & t0_,
+    const double & tf_,
+    const std::vector<double> & x0_,
+    const std::vector<double> & xf_
+
   ) :
-    spacecraft(spacecraft_),
-    bodies(bodies_),
-    x0(7),
-    xf(7) {};
+    spacecraft(spacecraft_), bodies(bodies_),
+    x0(x0_), xf(xf_), t0(t0_), tf(tf_) {};
 
 
   // destructor
@@ -35,10 +38,20 @@ struct Phase {
     const double & t0_,
     const double & tf_
   ) {
+    if (x0_.size() != 7 || xf_.size() != 7) {
+      throw "State sizes must be 7D.";
+    };
     x0 = x0_;
     xf = xf_;
     t0 = t0_;
     tf = tf_;
+  };
+
+  // compute mismatch
+  std::vector<double> mistmatch (void) const {
+    // midpoint time
+    const double tc(t0 + (tf-t0)/2);
+    
   };
 
 };

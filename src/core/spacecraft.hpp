@@ -40,7 +40,6 @@ struct Spacecraft {
 
   // force magnitude
   double fmag (const std::vector<double> & u) const {
-    check_control(u);
     const std::vector<double> f(force(u));
     double fmag(0);
     for (int i=0; i<3; ++i) {fmag += pow(f.at(i), 2);};
@@ -50,7 +49,6 @@ struct Spacecraft {
 
   // mass flow rate
   double mdot (const std::vector<double> & u) const {
-    check_control(u);
     return -fmag(u)/veff;
   };
 

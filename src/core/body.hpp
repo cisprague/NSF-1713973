@@ -49,19 +49,7 @@ struct Body {
     };
     return slist;
   };
-
-  static std::vector<Body> vector (const std::vector<std::string> & names) {
-    // number of bodies
-    const int nbod(names.size());
-    // initialise vector of bodies
-    std::vector<Body> bodies;
-    // for each body
-    for (int i=0; i<nbod; ++i) {
-      bodies.push_back(Body(names.at(i)));
-    };
-    return bodies;
-  };
-
+  
 };
 
 #endif

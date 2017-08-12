@@ -23,11 +23,26 @@ echo
 ./spice
 
 echo
-echo "Testing Body..."
+echo "Testing body..."
 echo
 ./body
 
 echo
-echo "Testing Body..."
+echo "Testing phase..."
 echo
 ./phase
+
+echo
+echo "Testing controller..."
+echo
+./controller
+
+echo
+echo "Testing dynamics..."
+echo
+./dynamics
+
+echo
+echo "Testing propagator..."
+echo
+./propagator

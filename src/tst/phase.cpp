@@ -6,20 +6,61 @@
 #include "../core/spice.hpp"
 
 int main (void) {
-  spice::load_kernels();
 
-  const std::string n1("Earth"), n2("Sun");
-  const double mass(660), thrust(0.0923), isp(3337);
-  const std::string d1("11/12/2004 00:00:00.000");
-  const std::string d2("11/12/2010 00:00:00.000");
+  // spacecraft
+  const Spacecraft spacecraft(660, 0.0923, 3337);
 
-  std::cout << "Consider a phase from one body to another:\n";
-  std::cout << "mass = 660 [kg], thrust = 0.0923 [N], isp = 3337 [s]\n";
-  std::cout << std::endl;
+  // bodies
+  const std::vector<Body> bodies{Body("Earth"), Body("Sun")};
 
-  std::cout << "Testing constructor 1..." << std::endl;
-  Phase p1(Spacecraft(mass, thrust, isp), {Body(n1), Body(n2)});
+  // times
+  const double t0(spice::mjd2000("11/12/2004 00:00:00.000"));
+  const double tf(spice::mjd2000("11/12/2010 00:00:00.000"));
 
+  // states
+  std::vector<double> x0(spice::state(t0, "1"));
+  x0.push_back(spacecraft.mass);
+  std::vector<double> xf(spice::state(tf, "392"));
+  xf.push_back(10);
+
+  // phase
+  std::cout << "Testing constructor...";
+  Phase phase(spacecraft, bodies, t0, tf, x0, xf);
+
+  std::cout << "The initial state and time:\n";
+  std::cout << "x0 = [ ";
+  for (int i=0; i<7; ++i) {
+    std::cout << phase.x0.at(i) << " ";
+  };
+  std::cout << " ]\n";
+  std::cout << "t0 = " << phase.t0 << std::endl;
+
+  std::cout << "The initial state and time:\n";
+  std::cout << "xf = [ ";
+  for (int i=0; i<7; ++i) {
+    std::cout << phase.xf.at(i) << " ";
+  };
+  std::cout << " ]\n";
+  std::cout << "tf = " << phase.tf << std::endl;
+
+  std::cout << "Testing setter..." << std::endl;
+  phase.set({0,0,0,0,0,0,0},{0,0,0,0,0,0,0},0,0);
+
+  std::cout << "The initial state and time:\n";
+  std::cout << "x0 = [ ";
+  for (int i=0; i<7; ++i) {
+    std::cout << phase.x0.at(i) << " ";
+  };
+  std::cout << " ]\n";
+  std::cout << "t0 = " << phase.t0 << std::endl;
+
+  std::cout << "The initial state and time:\n";
+  std::cout << "xf = [ ";
+  for (int i=0; i<7; ++i) {
+    std::cout << phase.xf.at(i) << " ";
+  };
+  std::cout << " ]\n";
+  std::cout << "tf = " << phase.tf << std::endl;
 
   return 0;
 };

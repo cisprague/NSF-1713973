@@ -16,6 +16,7 @@ namespace spice {
   };
 
   int id (const std::string & name) {
+    load_kernels();
     int id;
     int found;
     bodn2c_c(name.c_str(), &id, &found);
@@ -23,6 +24,7 @@ namespace spice {
   };
 
   double mu (const std::string & name) {
+    load_kernels();
     int dim;
     double mu;
     bodvcd_c(id(name), "GM", 1, &dim, &mu);
@@ -31,6 +33,7 @@ namespace spice {
   };
 
   double radius (const std::string & name) {
+    load_kernels();
     int dim;
     double radii[3];
     double radius;
@@ -44,6 +47,7 @@ namespace spice {
     const std::string & targ,
     const std::string & obs = "SSB"
   ) {
+    load_kernels();
     double lt;
     double st[6];
     spkezr_c(targ.c_str(), mjd2000, "J2000", "NONE", obs.c_str(), st, &lt);

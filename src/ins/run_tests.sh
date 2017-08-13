@@ -28,11 +28,6 @@ echo
 ./body
 
 echo
-echo "Testing phase..."
-echo
-./phase
-
-echo
 echo "Testing controller..."
 echo
 ./controller
@@ -46,3 +41,8 @@ echo
 echo "Testing propagator..."
 echo
 ./propagator
+
+echo
+echo "Testing phase..."
+echo
+./phase

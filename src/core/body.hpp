@@ -41,15 +41,15 @@ struct Body {
     const int npts(times.size());
     // for each time
     for (int i=0; i<npts; ++i) {
-      const std::vector<double> s(state(times.at(i), obs));
+      const std::vector<double> s(state(times[i], obs));
       // for each dimension
       for (int j=0; j<6; ++j) {
-        slist.at(j).push_back(s.at(j));
+        slist[j].push_back(s[j]);
       };
     };
     return slist;
   };
-  
+
 };
 
 #endif

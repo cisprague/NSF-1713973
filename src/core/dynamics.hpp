@@ -29,7 +29,7 @@ struct Dynamics {
 
   // compute rate
   std::vector<double> operator () (
-    const std::vector<double> x,
+    const std::vector<double> & x,
     std::vector<double> & dxdt,
     const double & t
   ) const {
@@ -42,32 +42,30 @@ struct Dynamics {
     // compute control throttle
     const std::vector<double> u(controller(x, t));
     // throttle magnitude
-    const double umag(sqrt(pow(u.at(0),2) + pow(u.at(1),2) + pow(u.at(2),2)));
-
-    // NOTE: non-dimensionalise these things
+    const double umag(sqrt(pow(u[0],2) + pow(u[1],2) + pow(u[2],2)));
 
     // velocity
-    dxdt.at(0) = x.at(3);
-    dxdt.at(1) = x.at(4);
-    dxdt.at(2) = x.at(5);
+    dxdt[0] = x[3];
+    dxdt[1] = x[4];
+    dxdt[2] = x[5];
 
     //propulsion
-    dxdt.at(3) = u.at(0)*spacecraft.thrust/x.at(6);
-    dxdt.at(4) = u.at(1)*spacecraft.thrust/x.at(6);
-    dxdt.at(5) = u.at(2)*spacecraft.thrust/x.at(6);
-    dxdt.at(6) = umag*spacecraft.thrust/spacecraft.veff;
+    dxdt[3] = u[0]*spacecraft.thrust/x[6];
+    dxdt[4] = u[1]*spacecraft.thrust/x[6];
+    dxdt[5] = u[2]*spacecraft.thrust/x[6];
+    dxdt[6] = -umag*spacecraft.thrust/spacecraft.veff;
 
     // gravity
     for (int i=0; i<bodies.size(); ++i) {
       // barycentric state
-      std::vector<double> s(bodies.at(i).state(t));
+      std::vector<double> s(bodies[i].state(t));
       // relative position
       for (int j=0; j<3; ++j) {s.at(j) = x.at(j) - s.at(j);};
       // computing cube norm
-      const double r3(pow(sqrt(pow(s.at(0),2) + pow(s.at(1),2) + pow(s.at(2),2)), 3));
+      const double r3(pow(sqrt(pow(s[0],2) + pow(s[1],2) + pow(s[2],2)), 3));
       // add influence
       for (int j=0, k=3; j<3, k<6; ++j, ++k) {
-        dxdt.at(k) -= bodies.at(i).mu*s.at(j)/r3;
+        dxdt.at(k) -= bodies[i].mu*s.at(j)/r3;
       };
     };
     return dxdt;

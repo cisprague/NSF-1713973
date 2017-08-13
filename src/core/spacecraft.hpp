@@ -34,7 +34,7 @@ struct Spacecraft {
   std::vector<double> force (const std::vector<double> & u) const {
     check_control(u);
     std::vector<double> f(u);
-    for (int i=0; i<3; ++i) {f.at(i) *= thrust;};
+    for (int i=0; i<3; ++i) {f[i] *= thrust;};
     return f;
   };
 
@@ -42,7 +42,7 @@ struct Spacecraft {
   double fmag (const std::vector<double> & u) const {
     const std::vector<double> f(force(u));
     double fmag(0);
-    for (int i=0; i<3; ++i) {fmag += pow(f.at(i), 2);};
+    for (int i=0; i<3; ++i) {fmag += pow(f[i], 2);};
     fmag = sqrt(fmag);
     return fmag;
   };

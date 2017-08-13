@@ -7,6 +7,9 @@
 
 int main (void) {
 
+  // load kernels
+  spice::load_kernels();
+
   // spacecraft
   const Spacecraft spacecraft(660, 0.0923, 3337);
 

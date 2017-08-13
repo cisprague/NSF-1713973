@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # enter data directory
-cd ../dta
+cd ../req/cspice
 
 # check spice
-if [ ! -d "spice" ]
+if [ ! -d "kernels" ]
 then
-  echo "spice directory not found, creating directory..."
+  echo "spice kernels directory not found, creating directory..."
   mkdir spice
 else
-  echo "spice directory found..."
+  echo "spice kernels directory found..."
 fi
 
 # move to directory
-cd spice
+cd kernels
 
 # download some files
 

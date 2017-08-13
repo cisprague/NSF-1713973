@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "../core/phase.hpp"
-#include "../core/spacecraft.hpp"
-#include "../core/body.hpp"
-#include "../core/spice.hpp"
+#include "../cor/phase.hpp"
+#include "../cor/spacecraft.hpp"
+#include "../cor/body.hpp"
+#include "../cor/spice.hpp"
 
 int main (void) {
 

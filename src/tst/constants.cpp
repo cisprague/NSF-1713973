@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../core/constants.hpp"
+#include "../cor/constants.hpp"
 
 int main (void) {
 

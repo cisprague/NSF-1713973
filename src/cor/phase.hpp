@@ -1,153 +1,88 @@
-// Christopher Iliffe Sprague
-// cisprague@ac.jaxa.jp
-// NSF Award 1713973
-
 #ifndef phase_hpp
 #define phase_hpp
 #include <vector>
-#include <cmath>
-#include <utility>
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "dynamics.hpp"
-#include "propagator.hpp"
 #include "controller.hpp"
-#include "linalg.hpp"
-#include "matplotlibcpp.h"
+#include "propagator.hpp"
+#include "constants.hpp"
 
-template <typename control_type>
 struct Phase {
 
   // a priori
-  const Spacecraft        spacecraft;
+  const Spacecraft spacecraft;
   const std::vector<Body> bodies;
-  const int               nbodies;
 
   // a posteriori
-  control_type        controller;
-  std::vector<double> x0;
-  std::vector<double> xN;
-  double              t0;
-  double              tN;
+  std::vector<double> x0, xf;
+  double t0, tf;
 
   // constructor
   Phase (
-    const Spacecraft        & spacecraft_,
+    const Spacecraft & spacecraft_,
     const std::vector<Body> & bodies_,
-    const control_type      & controller_
-  ) :
-    spacecraft(spacecraft_),
-    bodies(bodies_),
-    nbodies(bodies_.size()),
-    x0(7),
-    xN(7),
-    controller(controller_){};
-
-  // constructor
-  Phase (
-    const Spacecraft          & spacecraft_,
-    const std::vector<Body>   & bodies_,
-    const control_type        & controller_,
+    const double & t0_,
+    const double & tf_,
     const std::vector<double> & x0_,
-    const std::vector<double> & xN_,
-    const double              & t0_,
-    const double              & tN_
+    const std::vector<double> & xf_
   ) :
-    spacecraft(spacecraft_),
-    bodies(bodies_),
-    nbodies(bodies_.size()),
-    controller(controller_),
-    x0(x0_), xN(xN_), t0(t0_), tN(tN_) {};
+    spacecraft(spacecraft_), bodies(bodies_),
+    x0(x0_), xf(xf_), t0(t0_), tf(tf_) {};
+
 
   // destructor
   ~Phase (void) {};
 
-  // time setters
-  void set_initial_time (const double & t0_) {t0 = t0_;};
-
-  void set_final_time (const double & tN_) {tN = tN_;};
-
-  void set_times (const double & t0_, const double & tN_) {
-    set_initial_time(t0_);
-    set_final_time(tN_);
-  };
-
-  // state setters
-  void set_initial_state (const std::vector<double> & x0_) {x0 = x0_;};
-
-  void set_final_state (const std::vector<double> & xN_) {xN = xN_;};
-
-  void set_states (
+  // set phase
+  void set (
     const std::vector<double> & x0_,
-    const std::vector<double> & xN_
-  ) {set_initial_state(x0_); set_final_state(xN_);};
-
-  // set states and times
-  void set_phase (
-    const std::vector<double> & x0_,
-    const std::vector<double> & xN_,
-    const double              & t0_,
-    const double              & tN_
-  ) {set_states(x0_, xN_); set_times(t0_, tN_);};
-
-
-  //// methods ////
-
-  // propagate forwards and backwards
-  std::pair<Propagator::Results, Propagator::Results> propagate_autonomous (void) {
-
-    // we instantiate the dynamics
-    Dynamics::Autonomous_Control<control_type> dynamics(bodies, spacecraft, controller);
-
-    // we compute the matchpoint time
-    double tc(t0 + (tN-t0)/2);
-
-    using namespace Propagator;
-    // we propogate forward
-    Results phase1(propagate(x0, t0, tc, 0.001, dynamics));
-    // we propogate backward
-    Results phase2(propagate(xN, tN, tc, -0.001, dynamics));
-
-    // we bundle the results
-    return std::pair<Results, Results>(phase1, phase2);
-  };
-
-  // get mismatch with current controller
-  std::vector<double> mismatch (void) {
-
-    // get results
-    const std::pair<Propagator::Results, Propagator::Results> results(propagate_autonomous());
-
-    // define mismatch vector
-    std::vector<double> mismatch;
-
-    // compute mismatches
-    for (int i=0; i<7; ++i) {
-      mismatch.push_back(
-        results.second.states.at(i).back() - results.first.states.at(i).back()
-      );
+    const std::vector<double> & xf_,
+    const double & t0_,
+    const double & tf_
+  ) {
+    if (x0_.size() != 7 || xf_.size() != 7) {
+      throw "State sizes must be 7D.";
     };
-    return mismatch;
+    x0 = x0_;
+    xf = xf_;
+    t0 = t0_;
+    tf = tf_;
   };
 
-  void plot (const int & xi, const int & yi, const std::string & persp = "SSB") {
-
-    // propagate results
-    const std::pair<Propagator::Results, Propagator::Results> segs(propagate_autonomous());
-
-    // plot results
-    segs.first.plot(xi, yi, persp, "r");
-    segs.second.plot(xi, yi, persp, "b");
-
-    // assemble time
-    const std::vector<std::vector<double>> times{segs.first.times, segs.second.times};
-
-    for (int i=0; i<nbodies; ++i) {bodies.at(i).plot(xi, yi, times, persp);};
-
-    matplotlibcpp::show();
-
-
+  // compute mismatch
+  std::vector<double> mismatch (
+    const Controller & controller,
+    const double & dt = 1e-3,
+    const double & a_tol = 1e-12,
+    const double & r_tol = 1e-12,
+    const bool & disp = false,
+    const bool & nondim = true
+  ) const {
+    // set up dynamics
+    const Dynamics dynamics(spacecraft, bodies, controller);
+    // set up propagator
+    Propagator propagator(dynamics);
+    // midpoint time
+    const double tc(t0 + (tf-t0)/2.0);
+    // propagate forward
+    if (disp) {std::cout << "\nForward leg\n" << std::endl;};
+    const std::vector<double> xcf(propagator(x0, t0, tc, dt, a_tol, r_tol, disp));
+    // propagate backwards
+    if (disp) {std::cout << "\nBackward leg\n" << std::endl;};
+    const std::vector<double> xcb(propagator(xf, tf, tc, -dt, a_tol, r_tol, disp));
+    // compute mismatch
+    std::vector<double> ceq;
+    for (int i=0; i<7; ++i) {ceq.push_back(xcf[i] - xcb[i]);};
+    // scale and nondimensionalise
+    if (nondim) {
+      for (int i=0; i<3; ++i) {ceq[i] /= R_EARTH;};
+      for (int i=3; i<6; ++i) {ceq[i] /= V_EARTH;};
+      ceq[6] /= spacecraft.mass;
+    };
+    return ceq;
   };
 
 };
+
 #endif

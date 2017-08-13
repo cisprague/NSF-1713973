@@ -17,6 +17,7 @@ cd ../ins
 cd ../bld
 
 # does test directory exist?
+echo "Checking for test build directory..."
 if [ -d "tst" ]
 then
   echo "Test directory found..."
@@ -36,7 +37,7 @@ cd ../ins
 cd  ../bin
 
 # check for tst directory
-echo "Checking for test binaries..."
+echo "Checking for test binary directory..."
 if [ -d "tst" ]
 then
   echo "Binary test directory found..."

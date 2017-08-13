@@ -10,13 +10,22 @@
 bodies: [Earth, Moon, Sun]
 
 # spacecraft parametres
-isp:    243   # specific impulse [s]
-mass:   8165    # wet mass         [kg]
-thrust: 68.17e3 # max thrust       [N]
-mf:     500    # final mass       [kg]
+isp: 3337   # specific impulse [s]
+m0:  660    # wet mass         [kg]
+T:   0.0923 # max thrust       [N]
+mlb: 0      # minimal mass     [kg]
+mf:  200    # final mass       [kg]
 
 # inner shape of neural network
-net: [10, 10]
+net: [10, 10, 10]
+
+# bounds of neural network weights
+wlb: -10
+wub: 10
+
+# bounds of neural network biases
+blb: -10
+wub: 10
 
 # epoch times [s]
 t0:   "11/12/2004 00:00:00.000"
@@ -26,7 +35,8 @@ t0ub: "11/12/2004 00:00:00.000"
 # terminal times [s]
 tf:   "8/2/2020 00:00:00.000"
 tflb: "11/12/2004 00:00:00.000"
-tfub: "8/2/2040 00:00:00.000"
+tfub: "8/2/2020 00:00:00.000"
+
 
 # NAIF ID or name of boundary points (callable by time)
 origin: 1

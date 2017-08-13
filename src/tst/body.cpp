@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#include "../core/body.hpp"
-#include "../core/spice.hpp"
+#include "../cor/body.hpp"
+#include "../cor/spice.hpp"
 
 int main (void) {
 

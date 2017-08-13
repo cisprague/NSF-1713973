@@ -7,15 +7,11 @@ set(CMAKE_CXX_FLAGS "-Og")
 set(CMAKE_CXX_FLAGS "-pthread")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/tst)
 
-find_package(PythonLibs 2.7)
-
 # includes
 include_directories(${CMAKE_SOURCE_DIR}/../req/cspice/include)
 include_directories(/usr/include/boost)
-include_directories(${CMAKE_SOURCE_DIR}/../req/matplotlib-cpp)
-include_directories(${PYTHON_INCLUDE_DIRS})
 
-# tests
+# test core
 add_executable(constants ${CMAKE_SOURCE_DIR}/constants.cpp)
 add_executable(spacecraft ${CMAKE_SOURCE_DIR}/spacecraft.cpp)
 add_executable(spice ${CMAKE_SOURCE_DIR}/spice.cpp)

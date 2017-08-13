@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../core/spacecraft.hpp"
+#include "../cor/spacecraft.hpp"
 
 int main (void) {
 

@@ -1,8 +1,8 @@
 #include <iostream>
-#include "../core/controller.hpp"
-#include "../core/spacecraft.hpp"
-#include "../core/body.hpp"
-#include "../core/spice.hpp"
+#include "../cor/controller.hpp"
+#include "../cor/spacecraft.hpp"
+#include "../cor/body.hpp"
+#include "../cor/spice.hpp"
 
 int main (void) {
 

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "../core/spice.hpp"
+#include "../cor/spice.hpp"
 
 int main (void) {
 

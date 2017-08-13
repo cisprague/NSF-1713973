@@ -6,6 +6,7 @@
 #include <string>
 #include "ptp.hpp"
 
+/*
 #include "pagmo/problem.hpp"
 #include "pagmo/island.hpp"
 #include "pagmo/population.hpp"
@@ -13,9 +14,15 @@
 #include "pagmo/types.hpp"
 #include "pagmo/io.hpp"
 #include "pagmo/problems/unconstrain.hpp"
+*/
 
 int main(void) {
 
+  // instantiate the problem
+  PTP prob(1);
+
+
+  /*
   // instantiate the problem
   Problems::PTP prob("../dta/ptp/config.yaml");
   linalg::display_vec(prob.phase.mismatch());
@@ -40,6 +47,8 @@ int main(void) {
   //prob.phase.plot(0, 1);
   //prob.phase.plot(1, 2);
   //prob.phase.plot(0, 2);
+
+  */
 
 
   return 0;

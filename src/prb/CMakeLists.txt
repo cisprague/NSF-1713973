@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og")
 set(CMAKE_CXX_FLAGS "-pthread")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/prb)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../../usr)
 
 # includes
 include_directories(${CMAKE_SOURCE_DIR}/../req/cspice/include)
@@ -15,7 +15,7 @@ include_directories(/usr/local/include/yaml-cpp)
 include_directories(/usr/include/eigen3)
 
 # problems programmes
-add_executable(ptp ${CMAKE_SOURCE_DIR}/ptp/ptp.cpp)
+add_executable(ptp ${CMAKE_SOURCE_DIR}/ptp.cpp)
 
 # linking
 target_link_libraries(ptp ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)

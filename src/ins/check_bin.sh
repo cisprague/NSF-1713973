@@ -7,9 +7,10 @@ cd ..
 echo "Checking for binary directory..."
 if [ -d "bin" ]
 then
-  echo "Binary directory found..."
+  echo "Binary directory found."
 else
-  echo "Binary directory not found..."
+  echo "Binary directory not found."
+  echo "Creating binary directory..."
   mkdir bin
 fi
 

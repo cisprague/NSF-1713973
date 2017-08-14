@@ -37,6 +37,9 @@ struct Controller {
     no(shape.back())
   {};
 
+  // destructor
+  ~Controller (void) {};
+
   // initialise network shape
   static std::vector<int> init_shape(
     const std::vector<int> & hshape_,

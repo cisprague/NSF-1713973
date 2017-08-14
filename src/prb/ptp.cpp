@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include "ptp.hpp"
+#include "../cor/spice.hpp"
 
 /*
 #include "pagmo/problem.hpp"
@@ -18,8 +19,14 @@
 
 int main(void) {
 
+  // load kernels
+  spice::load_kernels();
+
   // instantiate the problem
   PTP prob(1);
+
+  // name
+  std::cout << prob.get_name() << std::endl;
 
 
   /*

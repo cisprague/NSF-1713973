@@ -20,12 +20,10 @@ mf:  200    # final mass       [kg]
 net: [10, 10, 10]
 
 # bounds of neural network weights
-wlb: -10
-wub: 10
+w: 10
 
 # bounds of neural network biases
-blb: -10
-wub: 10
+b: 10
 
 # epoch times [s]
 t0:   "11/12/2004 00:00:00.000"

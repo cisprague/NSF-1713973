@@ -1,20 +1,25 @@
 #!/bin/bash
+echo
 
-# check prb infrastructure
-echo "Checking for problem infrastructure..."
+# check for infrastructure
+echo "Checking problems infrastructure..."
 ./check_problems.sh
 
-# remove binaries
-echo "Removing existing binaries..."
-rm ../bin/prb/*
+# go to binary directory
+cd ../../usr
 
-# enter build directory
-cd ../bld/prb
+# check for binaries
+echo "Deleting existing problem binaries.."
+find . -type f  ! -name "*.*"  -delete
 
-# build the programme
-echo "Building problems..."
+# go back to build
+cd ../src/bld/prb
+
+# build the source
+echo "Building problems source..."
 cmake ../../prb
-make
+echo "Problem source built."
 
-# back to ins
-cd ../../ins
+# create the binaries
+echo "Building binaries..."
+make

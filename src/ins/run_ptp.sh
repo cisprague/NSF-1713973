@@ -4,7 +4,7 @@
 ./build_problems.sh
 
 # go to problem binaries
-cd ../bin/prb
+cd ../../usr
 
 # execute
 echo

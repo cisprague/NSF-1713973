@@ -50,6 +50,19 @@ struct Body {
     return slist;
   };
 
+  // body list generator
+  static std::vector<Body> vector (const std::vector<std::string> & names) {
+    // instiate vector
+    std::vector<Body> bodies;
+    // number of bodies
+    const int nbod(names.size());
+    // append each body
+    for (int i=0; i<nbod; ++i) {
+      bodies.push_back(Body(names[i]));
+    };
+    return bodies;
+  };
+
 };
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef phase_hpp
 #define phase_hpp
 #include <vector>
+#include <tuple>
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "dynamics.hpp"
@@ -48,6 +49,50 @@ struct Phase {
     xf = xf_;
     t0 = t0_;
     tf = tf_;
+  };
+
+  // propagate fully
+  Propagator trajectory (
+    const Controller & controller,
+    const double & dt = 1e-3,
+    const double & a_tol = 1e-12,
+    const double & r_tol = 1e-12,
+    const bool & disp = false,
+    const bool & nondim = true
+  ) const {
+    // set up dynamics
+    const Dynamics dynamics(spacecraft, bodies, controller);
+    // set up propagator
+    Propagator propagator(dynamics);
+    // propagate
+    if (disp) {std::cout << "Propagating full phase...";};
+    propagator(x0, t0, tf, dt, a_tol, r_tol, disp);
+    return propagator;
+  };
+
+  // propagate from boundaries
+  std::pair<Propagator, Propagator> mismatch_trajectory (
+    const Controller & controller,
+    const double & dt = 1e-3,
+    const double & a_tol = 1e-12,
+    const double & r_tol = 1e-12,
+    const bool & disp = false,
+    const bool & nondim = true
+  ) const {
+    // set up dynamics
+    const Dynamics dynamics(spacecraft, bodies, controller);
+    // set up propagator
+    Propagator propagator1(dynamics);
+    Propagator propagator2(dynamics);
+    // midpoint time
+    const double tc(t0 + (tf-t0)/2.0);
+    // propagate forward
+    if (disp) {std::cout << "\nForward leg\n" << std::endl;};
+    propagator1(x0, t0, tc, dt, a_tol, r_tol, disp);
+    // propagate backwards
+    if (disp) {std::cout << "\nBackward leg\n" << std::endl;};
+    propagator2(xf, tf, tc, -dt, a_tol, r_tol, disp);
+    return std::pair<Propagator, Propagator>(propagator1, propagator2);
   };
 
   // compute mismatch

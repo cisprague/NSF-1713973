@@ -1,3 +1,4 @@
 bld/*
 bin/*
+bin/tst/*
 req/cspice/kernels/*

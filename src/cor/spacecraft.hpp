@@ -7,10 +7,7 @@
 struct Spacecraft {
 
   // constants
-  const double mass;
-  const double thrust;
-  const double isp;
-  const double veff;
+  const double mass, thrust, isp, veff;
 
   // constructor
   Spacecraft (

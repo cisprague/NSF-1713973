@@ -6,16 +6,21 @@
 
 namespace spice {
 
+  bool loaded(false);
+
   void load_kernels (void) {
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/DE.bsp");
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/GM.tpc");
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/L2.bsp");
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/LS.tls");
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/ORMS.bsp");
-    furnsh_c("/home/cisprague/Documents/Dev/NSF-1713973/src/req/cspice/kernels/PCK.tpc");
+    trcoff_c();
+    furnsh_c("../src/req/cspice/kernels/DE.bsp");
+    furnsh_c("../src/req/cspice/kernels/GM.tpc");
+    furnsh_c("../src/req/cspice/kernels/L2.bsp");
+    furnsh_c("../src/req/cspice/kernels/LS.tls");
+    furnsh_c("../src/req/cspice/kernels/ORMS.bsp");
+    furnsh_c("../src/req/cspice/kernels/PCK.tpc");
+    loaded = true;
   };
 
   int id (const std::string & name) {
+    if (! loaded) {load_kernels();};
     int id;
     int found;
     bodn2c_c(name.c_str(), &id, &found);
@@ -23,6 +28,7 @@ namespace spice {
   };
 
   double mu (const std::string & name) {
+    if (! loaded) {load_kernels();};
     int dim;
     double mu;
     bodvcd_c(id(name), "GM", 1, &dim, &mu);
@@ -31,6 +37,7 @@ namespace spice {
   };
 
   double radius (const std::string & name) {
+    if (! loaded) {load_kernels();};
     int dim;
     double radii[3];
     double radius;
@@ -44,6 +51,7 @@ namespace spice {
     const std::string & targ,
     const std::string & obs = "SSB"
   ) {
+    if (! loaded) {load_kernels();};
     double lt;
     double st[6];
     spkezr_c(targ.c_str(), mjd2000, "J2000", "NONE", obs.c_str(), st, &lt);
@@ -53,6 +61,7 @@ namespace spice {
   };
 
   double mjd2000 (const std::string & date) {
+    if (! loaded) {load_kernels();};
     double mjd2000;
     str2et_c(date.c_str(), &mjd2000);
     return mjd2000;

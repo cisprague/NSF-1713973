@@ -1,6 +1,7 @@
 #ifndef dynamics_hpp
 #define dynamics_hpp
 #include <vector>
+#include <iostream>
 #include "spacecraft.hpp"
 #include "body.hpp"
 #include "controller.hpp"
@@ -35,9 +36,17 @@ struct Dynamics {
   ) const {
 
     // check state validity
-    if (x.size() != 7) {throw "State must be 7D.";};
+    if (x.size() != 7) {
+      std::cout << "State must be 7D." << std::endl;
+      throw 0;
+    };
     // check rate validity
-    if (dxdt.size() != 7) {throw "dxdt must be 7D.";};
+    if (dxdt.size() != 7) {
+      std::cout << "dxdt must be 7D." << std::endl;
+      throw 0;
+    };
+    // check mass
+    if (x[6]<=0 || x[6]>spacecraft.mass) {throw spacecraft;};
 
     // compute control throttle
     const std::vector<double> u(controller(x, t));
@@ -61,8 +70,12 @@ struct Dynamics {
       std::vector<double> s(bodies[i].state(t));
       // relative position
       for (int j=0; j<3; ++j) {s.at(j) = x.at(j) - s.at(j);};
+      // computing norm
+      const double r(sqrt(pow(s[0],2) + pow(s[1],2) + pow(s[2],2)));
+      // make sure spacecraft hasn't crashed
+      if (r<=bodies[i].radius) {throw bodies[i];};
       // computing cube norm
-      const double r3(pow(sqrt(pow(s[0],2) + pow(s[1],2) + pow(s[2],2)), 3));
+      const double r3(pow(r, 3));
       // add influence
       for (int j=0, k=3; j<3, k<6; ++j, ++k) {
         dxdt.at(k) -= bodies[i].mu*s.at(j)/r3;

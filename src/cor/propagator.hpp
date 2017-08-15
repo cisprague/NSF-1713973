@@ -10,10 +10,12 @@ struct Propagator {
   // members
   const Dynamics dynamics;
   std::vector<std::vector<double>> states;
+  std::vector<std::vector<double>> controls;
   std::vector<double> times;
 
+
   // constructor
-  Propagator (const Dynamics & dynamics_) : dynamics(dynamics_), states(7), times(0) {};
+  Propagator (const Dynamics & dynamics_) : dynamics(dynamics_), states(7), times(0), controls(3) {};
 
   // destructor
   ~Propagator (void) {};
@@ -44,10 +46,22 @@ struct Propagator {
     using namespace boost::numeric::odeint;
     typedef std::vector<double> state_type;
     typedef runge_kutta_fehlberg78<state_type> error_stepper_type;
-    integrate_adaptive(
-      make_controlled(a_tol, r_tol, error_stepper_type()),
-      dynamics, x0, t0, tf, dt, Record(states, times, disp)
-    );
+    try {
+      integrate_adaptive(
+        make_controlled(a_tol, r_tol, error_stepper_type()),
+        dynamics, x0, t0, tf, dt, Record(dynamics.controller, states, controls, times, disp)
+      );
+    }
+    catch (const Spacecraft & spacecraft_) {
+      std::cout << "Spacecraft mass violated." << std::endl;
+    }
+    catch (const Body & body) {
+      std::cout << "Spacecraft has crashed into ";
+      std::cout << body.name << "." << std::endl;
+    }
+    catch (...) {
+      std::cout << "Unknown error" << std::endl;
+    }
     // final state
     std::vector<double> xf;
     for (int i=0; i<7; ++i) {xf.push_back(states[i].back());};
@@ -59,15 +73,19 @@ struct Propagator {
 
     // members
     const bool disp;
+    const Controller & controller;
     std::vector<std::vector<double>> & states;
+    std::vector<std::vector<double>> & controls;
     std::vector<double> & times;
 
     // construct
     Record (
+      const Controller & controller_,
       std::vector<std::vector<double>> & states_,
+      std::vector<std::vector<double>> & controls_,
       std::vector<double> & times_,
       const bool & disp_
-    ) : states(states_), times(times_), disp(disp_) {};
+    ) : controller(controller_), states(states_), controls(controls_), times(times_), disp(disp_) {};
 
     // destruct
     ~Record (void) {};
@@ -79,6 +97,10 @@ struct Propagator {
       if (states.size() != 7) {throw "State record must be 7D";};
       // append each state
       for (int i=0; i<7; ++i) {states[i].push_back(x[i]);};
+      // get control
+      const std::vector<double> u(controller(x, t));
+      // append control
+      for (int i=0; i<3; ++i) {controls[i].push_back(u[i]);};
       // append each time
       times.push_back(t);
       // display

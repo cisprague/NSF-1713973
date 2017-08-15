@@ -17,7 +17,7 @@ mlb: 0      # minimal mass     [kg]
 mf:  200    # final mass       [kg]
 
 # inner shape of neural network
-net: [10, 10, 10]
+net: [20, 20, 20]
 
 # bounds of neural network weights
 w: 10

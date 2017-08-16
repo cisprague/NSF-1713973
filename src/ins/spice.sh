@@ -25,6 +25,14 @@ else
   echo "found L2 kernels..."
 fi
 
+if [ ! -f "L4.bsp" ]
+then
+  echo "downloading L4 kernels..."
+  wget -O L4.bsp https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/lagrange_point/L4_de431.bsp
+else
+  echo "found L4 kernels..."
+fi
+
 if [ ! -f "DE.bsp" ]
 then
   echo "downloading DE kernels..."

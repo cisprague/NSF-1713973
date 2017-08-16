@@ -46,7 +46,7 @@ struct Dynamics {
       throw 0;
     };
     // check mass
-    if (x[6]<=0 || x[6]>spacecraft.mass) {throw spacecraft;};
+    if (x[6]<0 || x[6]>spacecraft.mass) {throw spacecraft;};
 
     // compute control throttle
     const std::vector<double> u(controller(x, t));
@@ -73,7 +73,7 @@ struct Dynamics {
       // computing norm
       const double r(sqrt(pow(s[0],2) + pow(s[1],2) + pow(s[2],2)));
       // make sure spacecraft hasn't crashed
-      if (r<=bodies[i].radius) {throw bodies[i];};
+      if (r<bodies[i].radius) {throw bodies[i];};
       // computing cube norm
       const double r3(pow(r, 3));
       // add influence

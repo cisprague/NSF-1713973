@@ -8,6 +8,7 @@
 #include <cmath>
 #include <fstream>
 #include <matplotlibcpp.h>
+#include <pagmo/utils/gradients_and_hessians.hpp>
 #include "../cor/spacecraft.hpp"
 #include "../cor/body.hpp"
 #include "../cor/phase.hpp"
@@ -32,7 +33,8 @@ struct PTP {
     phase(init_phase()),
     controller(init_controller()),
     bounds(init_bounds()) {
-  };
+      spice::load_kernels();
+    };
 
   // constructor
   PTP (void) : PTP(1) {};
@@ -84,36 +86,43 @@ struct PTP {
   };
 
   // save decision
-  void save(const std::vector<double> & dv) const {
+  void save(const std::vector<std::vector<double>> & dvs) const {
     std::string info;
     info.append("Point to point (PTP) trajectory optimisation problem\n");
-    info.append("decision vector with 3 phase parametres\n");
+    info.append("decision vectors with 3 phase parametres\n");
     info.append("and a neural network with ");
     info.append(std::to_string(controller.nw));
     info.append(" weights and ");
     info.append(std::to_string(controller.nb));
     info.append(" biases.");
+    const int nsol(dvs.size());
+
     YAML::Emitter out;
-    out << YAML::BeginMap;
     out << YAML::Comment(info);
-    out << YAML::Key << "t0";
-    out << YAML::Value << dv[0];
-    out << YAML::Key << "tf";
-    out << YAML::Value << dv[1];
-    out << YAML::Key << "mf";
-    out << YAML::Value << dv[2];
-    out << YAML::Key << "weights";
-    out << YAML::Value << YAML::BeginSeq;
-    for (int i=0; i<controller.nw; ++i) {
-      out << dv[3 + i];
+    out << YAML::BeginSeq;
+    for (int i=0; i<nsol; ++i) {
+      out << YAML::BeginMap;
+      out << YAML::Key << "t0";
+      out << YAML::Value << dvs[i][0];
+      out << YAML::Key << "tf";
+      out << YAML::Value << dvs[i][1];
+      out << YAML::Key << "mf";
+      out << YAML::Value << dvs[i][2];
+      out << YAML::Key << "weights";
+      out << YAML::Value << YAML::BeginSeq;
+      for (int j=0; j<controller.nw; ++j) {
+        out << dvs[i][3 + j];
+      };
+      out << YAML::EndSeq;
+      out << YAML::Key << "biases";
+      out << YAML::Value << YAML::BeginSeq;
+      for (int j=0; j<controller.nb; ++j) {
+        out << dvs[i][3+ controller.nw + j];
+      };
+      out << YAML::EndSeq;
+      out << YAML::EndMap;
     };
     out << YAML::EndSeq;
-    out << YAML::Key << "biases";
-    out << YAML::Value << YAML::BeginSeq;
-    for (int i=0; i<controller.nb; ++i) {
-      out << dv[3+ controller.nw + i];
-    };
-    out << YAML::EndSeq << YAML::EndMap;
     std::ofstream fout("ptp_dec.yaml");
     fout << out.c_str();
   };
@@ -158,8 +167,8 @@ struct PTP {
     // 2) compute the objective
     std::vector<double> fit{-dv[2]};
     // 3) compute the equality constraints
-    std::vector<double> ceq(phase.mismatch(controller));
-    fit.insert(fit.end(), ceq.begin(), ceq.end());
+    std::vector<double> ceq(phase.mismatch(controller, 1e-3, 1e-8, 1e-8));
+    for (int i=0; i<7; ++i) {fit.push_back(ceq[i]);};
     std::cout << "[ ";
     for (int i=0; i<8; ++i) {
       std::cout << fit[i] << " ";
@@ -181,6 +190,14 @@ struct PTP {
   // number of equality constraints
   std::vector<double>::size_type get_nec (void) const {
     return 7;
+  };
+
+  // estimate gradient
+  std::vector<double> gradient (const std::vector<double> & dv) const {
+    return pagmo::estimate_gradient(
+      [&](const std::vector<double> & dv) {return fitness(dv);},
+      dv
+    );
   };
 
   // problem name

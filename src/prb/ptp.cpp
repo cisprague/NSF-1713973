@@ -5,14 +5,24 @@
 #include <iostream>
 #include <string>
 #include <pagmo/problem.hpp>
-#include <pagmo/island.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/algorithms/cstrs_self_adaptive.hpp>
-
+#include <pagmo/algorithms/bee_colony.hpp>
+#include <yaml.h>
 #include "ptp.hpp"
 #include "../cor/spice.hpp"
 
 int main(void) {
+
+  // configurations
+  YAML::Node config(YAML::LoadFile("ptp.yaml"));
+  const int nind(config["nind"].as<int>());
+  const int ngen(config["ngen"].as<int>());
+  const double etol(config["etol"].as<double>());
+  const double nevo(config["nevo"].as<int>());
+
+  // load kernels
+  spice::load_kernels();
 
   // instatiate native problem
   PTP prob(1);
@@ -20,36 +30,28 @@ int main(void) {
   // instantiate problem
   pagmo::problem pgprob(prob);
 
-  // set constraint tolerance
-  pgprob.set_c_tol({1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8});
+  // instantiate algorithm
+  pagmo::bee_colony ialgo(10);
+  ialgo.set_verbosity(5);
+  pagmo::cstrs_self_adaptive algo(2, ialgo);
+  algo.set_verbosity(5);
 
-  // create population
-  pagmo::population pop(pgprob, 50);
+  // archipelago
+  pagmo::population pop(pgprob, nind);
 
-  // instantiate an algorithm
-  pagmo::cstrs_self_adaptive algo(1000);
-  algo.set_verbosity(1);
-
-  // instantiate island
-  //pagmo::island isl(algo, pop);
-
-  // evolve the island
-  //isl.evolve(1);
-  pop = algo.evolve(pop);
-
-  // get the champion decision
-  //const std::vector<double> dec(isl.get_population().champion_x());
-  const std::vector<double> dec(pop.champion_x());
-
-  // save the decision
-  prob.save(dec);
-
-  // set the problem decision
-  prob.set(dec);
-
-  // plot the decision
-  prob.plot();
-
+  // evolve
+  for (int i=0; i<nevo; ++i) {
+    pop = algo.evolve(pop);
+    // decision vectors
+    const std::vector<std::vector<double>> dvs{pop.champion_x()};
+    // save decisions
+    prob.save(dvs);
+    // set the problem decision
+    for (int i=0; i<dvs.size(); ++i){
+      prob.set(dvs[i]);
+      prob.plot();
+    };
+  };
 
 
   return 0;

@@ -21,6 +21,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 # problems programmes
 add_executable(ptp ${CMAKE_SOURCE_DIR}/ptp.cpp)
+add_executable(ptp_grad ${CMAKE_SOURCE_DIR}/ptp_grad.cpp)
 
 # linking
 target_link_libraries(ptp ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)
@@ -28,3 +29,10 @@ target_link_libraries(ptp ${Boost_LIBRARIES})
 target_link_libraries(ptp /usr/local/lib/libpagmo.so)
 target_link_libraries(ptp /usr/local/lib/libyaml-cpp.a)
 target_link_libraries(ptp ${PYTHON_LIBRARIES})
+
+target_link_libraries(ptp_grad ${CMAKE_SOURCE_DIR}/../req/cspice/lib/cspice.a)
+target_link_libraries(ptp_grad ${Boost_LIBRARIES})
+target_link_libraries(ptp_grad /usr/local/lib/libpagmo.so)
+target_link_libraries(ptp_grad /usr/local/lib/libyaml-cpp.a)
+target_link_libraries(ptp_grad ${PYTHON_LIBRARIES})
+target_link_libraries(ptp_grad /usr/local/lib/libnlopt.a)

@@ -6,7 +6,7 @@
 #include <pagmo/problem.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/algorithms/mbh.hpp>
-#include <pagmo/algorithms/nlopt.hpp>
+#include <pagmo/algorithms/compass_search.hpp>
 #include <yaml.h>
 #include "ptp.hpp"
 #include "../cor/spice.hpp"
@@ -30,14 +30,10 @@ int main(void) {
   pagmo::problem pgprob(prob);
 
   // instantiate inner algorithm
-  pagmo::nlopt ialgo("slsqp");
+  pagmo::compass_search ialgo(100);
   ialgo.set_verbosity(5);
-  ialgo.set_xtol_rel(1e-5);
-  ialgo.set_ftol_rel(1e-5);
-  ialgo.set_maxeval(50);
-
   // instantiate outer algorithm
-  pagmo::mbh algo(ialgo, 3, 1e-2);
+  pagmo::mbh algo(ialgo, 2, 1e-2);
 
   // population of decisions
   pagmo::population pop(pgprob, nind);
@@ -52,7 +48,6 @@ int main(void) {
     // set the problem decision
     for (int i=0; i<dvs.size(); ++i){
       prob.set(dvs[i]);
-      prob.plot();
     };
   };
 

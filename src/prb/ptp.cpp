@@ -49,7 +49,6 @@ int main(void) {
     // set the problem decision
     for (int i=0; i<dvs.size(); ++i){
       prob.set(dvs[i]);
-      prob.plot();
     };
   };
 

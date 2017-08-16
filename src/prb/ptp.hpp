@@ -86,7 +86,10 @@ struct PTP {
   };
 
   // save decision
-  void save(const std::vector<std::vector<double>> & dvs) const {
+  void save (
+    const std::vector<std::vector<double>> & dvs,
+    const std::string & fname = "ptp_dec.yaml"
+  ) const {
     std::string info;
     info.append("Point to point (PTP) trajectory optimisation problem\n");
     info.append("decision vectors with 3 phase parametres\n");
@@ -123,7 +126,7 @@ struct PTP {
       out << YAML::EndMap;
     };
     out << YAML::EndSeq;
-    std::ofstream fout("ptp_dec.yaml");
+    std::ofstream fout(fname);
     fout << out.c_str();
   };
 

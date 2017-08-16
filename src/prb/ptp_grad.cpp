@@ -6,7 +6,7 @@
 #include <pagmo/problem.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/algorithms/mbh.hpp>
-#include <pagmo/algorithms/compass_search.hpp>
+#include <pagmo/algorithms/ipopt.hpp>
 #include <yaml.h>
 #include "ptp.hpp"
 #include "../cor/spice.hpp"
@@ -30,10 +30,11 @@ int main(void) {
   pagmo::problem pgprob(prob);
 
   // instantiate inner algorithm
-  pagmo::compass_search ialgo(100);
+  pagmo::ipopt ialgo;
   ialgo.set_verbosity(5);
+
   // instantiate outer algorithm
-  pagmo::mbh algo(ialgo, 2, 1e-2);
+  pagmo::mbh algo(ialgo, 5, 1e-2);
 
   // population of decisions
   pagmo::population pop(pgprob, nind);
@@ -44,11 +45,7 @@ int main(void) {
     // decision vectors
     const std::vector<std::vector<double>> dvs{pop.champion_x()};
     // save decisions
-    prob.save(dvs);
-    // set the problem decision
-    for (int i=0; i<dvs.size(); ++i){
-      prob.set(dvs[i]);
-    };
+    prob.save(dvs, "ptp_grad_dec.yaml");
   };
 
 

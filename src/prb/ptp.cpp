@@ -6,8 +6,8 @@
 #include <string>
 #include <pagmo/problem.hpp>
 #include <pagmo/population.hpp>
-#include <pagmo/algorithms/cstrs_self_adaptive.hpp>
 #include <pagmo/algorithms/bee_colony.hpp>
+#include <pagmo/problems/unconstrain.hpp>
 #include <yaml.h>
 #include "ptp.hpp"
 #include "../cor/spice.hpp"
@@ -28,12 +28,10 @@ int main(void) {
   PTP prob(1);
 
   // instantiate problem
-  pagmo::problem pgprob(prob);
+  pagmo::unconstrain pgprob(prob, "kuri");
 
   // instantiate algorithm
-  pagmo::bee_colony ialgo(10);
-  ialgo.set_verbosity(5);
-  pagmo::cstrs_self_adaptive algo(2, ialgo);
+  pagmo::bee_colony algo(ngen);
   algo.set_verbosity(5);
 
   // archipelago
@@ -45,13 +43,8 @@ int main(void) {
     // decision vectors
     const std::vector<std::vector<double>> dvs{pop.champion_x()};
     // save decisions
-    prob.save(dvs);
-    // set the problem decision
-    for (int i=0; i<dvs.size(); ++i){
-      prob.set(dvs[i]);
-    };
+    prob.save(dvs, "ptp_dec.yaml");
   };
-
 
   return 0;
 };

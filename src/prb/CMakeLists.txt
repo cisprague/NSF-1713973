@@ -18,6 +18,7 @@ include_directories(/usr/local/include/pagmo)
 include_directories(/usr/local/include/yaml-cpp)
 include_directories(/usr/include/eigen3)
 include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(/home/cisprague/Downloads/Ipopt-3.12.8/include/coin)
 
 # problems programmes
 add_executable(ptp ${CMAKE_SOURCE_DIR}/ptp.cpp)
@@ -36,3 +37,4 @@ target_link_libraries(ptp_grad /usr/local/lib/libpagmo.so)
 target_link_libraries(ptp_grad /usr/local/lib/libyaml-cpp.a)
 target_link_libraries(ptp_grad ${PYTHON_LIBRARIES})
 target_link_libraries(ptp_grad /usr/local/lib/libnlopt.a)
+target_link_libraries(ptp_grad /home/cisprague/Downloads/Ipopt-3.12.8/lib/libipopt.so)
